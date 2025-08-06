@@ -35,6 +35,7 @@ import LanguagePicker from "./LanguagePicker";
 //import CountryPicker from "./CountryPicker";
 import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "@/contexts/I18nContext";
+import { Separator } from "../ui/separator";
 
 const Header: React.FC = () => {
     const { user, profile, signOut, loading } = useAuth();
@@ -92,9 +93,9 @@ const Header: React.FC = () => {
     };
 
     return (
-        <header className="bg-background/80 backdrop-blur-md border-b border-border sticky top-0 z-50 transition-all duration-300">
-            <div className="container mx-auto px-4 sm:px-6">
-                <div className="flex items-center justify-between h-16">
+        <header className="w-full mx-auto bg-background/80 backdrop-blur-md sticky top-0 z-50 transition-all duration-300">
+            <div className="mx-auto px-4 sm:px-6">
+                <div className="w-full max-w-7xl mx-auto flex items-center justify-between h-16">
                     {/* Logo */}
                     <Link
                         href="/"
@@ -234,6 +235,7 @@ const Header: React.FC = () => {
                         )}
                     </Button>
                 </div>
+                <Separator className="hidden md:block my-2 w-full" />
 
                 {/* Mobile Menu */}
                 {mobileMenuOpen && (
@@ -315,16 +317,16 @@ const Header: React.FC = () => {
                                 <div className="flex items-center justify-between px-3 py-2">
                                     <span className="text-sm font-medium text-muted-foreground">Settings</span>
                                     <div className="flex items-center space-x-2">
-                                        <DropdownMenu>
+                                        {/* <DropdownMenu>
                                             <DropdownMenuTrigger asChild>
                                                 <Button variant="ghost" size="sm">
                                                     <Globe className="w-4 h-4" />
                                                 </Button>
                                             </DropdownMenuTrigger>
-                                            {/* <DropdownMenuContent align="end" className="w-48 p-2">
+                                            <DropdownMenuContent align="end" className="w-48 p-2">
                                                 <CountryPicker />
-                                            </DropdownMenuContent> */}
-                                        </DropdownMenu>
+                                            </DropdownMenuContent>
+                                        </DropdownMenu> */}
                                         <DropdownMenu>
                                             <DropdownMenuTrigger asChild>
                                                 <Button variant="ghost" size="sm">

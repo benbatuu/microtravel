@@ -1,424 +1,422 @@
 "use client";
 
-import React, { useState } from "react";
-import Link from "next/link";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent } from "@/components/ui/card";
+import { Textarea } from "@/components/ui/textarea";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
 import {
     Mail,
     Phone,
     MapPin,
-    Clock,
-    ArrowLeft,
+    MessageSquare,
     Send,
-    MessageCircle,
-    HeadphonesIcon,
-    Globe
+    Loader2,
+    Clock,
+    CheckCircle,
 } from "lucide-react";
 
-const contactMethods = [
+interface ContactMethod {
+    icon: React.ReactNode;
+    title: string;
+    description: string;
+    contact: string;
+    href: string;
+}
+
+interface FormData {
+    firstName: string;
+    lastName: string;
+    email: string;
+    company: string;
+    message: string;
+    priority: string;
+    agreeToTerms: boolean;
+}
+
+interface OfficeHours {
+    day: string;
+    hours: string;
+}
+
+const contactMethods: ContactMethod[] = [
     {
-        icon: <Mail className="w-6 h-6" />,
-        title: "Email Support",
-        description: "Get help via email within 24 hours",
-        contact: "support@microtravel.com",
-        action: "Send Email"
+        icon: <Mail className="h-6 w-6" />,
+        title: "Email",
+        description: "Get a response within 24 hours",
+        contact: "hello@company.com",
+        href: "mailto:hello@company.com",
     },
     {
-        icon: <Phone className="w-6 h-6" />,
-        title: "Phone Support",
-        description: "Speak with our team directly",
-        contact: "+1 (555) 123-4567",
-        action: "Call Now"
-    },
-    {
-        icon: <MessageCircle className="w-6 h-6" />,
+        icon: <MessageSquare className="h-6 w-6" />,
         title: "Live Chat",
-        description: "Chat with us in real-time",
-        contact: "Available 9 AM - 6 PM EST",
-        action: "Start Chat"
+        description: "Instant support available now",
+        contact: "Start chatting",
+        href: "#",
     },
     {
-        icon: <HeadphonesIcon className="w-6 h-6" />,
-        title: "Premium Support",
-        description: "Priority support for premium members",
-        contact: "premium@microtravel.com",
-        action: "Contact Premium"
-    }
+        icon: <Phone className="h-6 w-6" />,
+        title: "Phone",
+        description: "Mon-Fri, 9AM-6PM EST",
+        contact: "+1 (555) 123-4567",
+        href: "tel:+15551234567",
+    },
+    {
+        icon: <MapPin className="h-6 w-6" />,
+        title: "Office",
+        description: "Schedule an in-person meeting",
+        contact: "123 Innovation St, Tech City",
+        href: "#",
+    },
 ];
 
-const officeLocations = [
-    {
-        city: "New York",
-        address: "123 Travel Street, NY 10001",
-        phone: "+1 (555) 123-4567",
-        hours: "Mon-Fri: 9 AM - 6 PM EST"
-    },
-    {
-        city: "London",
-        address: "456 Adventure Lane, London SW1A 1AA",
-        phone: "+44 20 7123 4567",
-        hours: "Mon-Fri: 9 AM - 6 PM GMT"
-    },
-    {
-        city: "Tokyo",
-        address: "789 Journey Road, Tokyo 100-0001",
-        phone: "+81 3-1234-5678",
-        hours: "Mon-Fri: 9 AM - 6 PM JST"
-    }
+const officeHours: OfficeHours[] = [
+    { day: "Monday - Friday", hours: "9:00 AM - 6:00 PM EST" },
+    { day: "Saturday", hours: "10:00 AM - 4:00 PM EST" },
+    { day: "Sunday", hours: "Closed" },
 ];
 
-const faqItems = [
-    {
-        question: "How do I book a micro-travel experience?",
-        answer: "Simply browse our experiences, select your preferred dates, and complete the booking process. You'll receive instant confirmation."
-    },
-    {
-        question: "What's included in a micro-travel package?",
-        answer: "Each package includes accommodation, guided activities, local transportation, and 24/7 support. Meals may vary by package."
-    },
-    {
-        question: "Can I cancel or modify my booking?",
-        answer: "Yes, you can cancel or modify your booking up to 48 hours before departure. Premium members get more flexible cancellation terms."
-    },
-    {
-        question: "Do you offer group discounts?",
-        answer: "Yes, we offer discounts for groups of 4 or more. Contact our team for custom group pricing and packages."
-    }
+const contactInfo = [
+    { label: "Email", value: "hello@company.com" },
+    { label: "Phone", value: "+1 (555) 123-4567" },
+    { label: "Address", value: "123 Innovation St, Tech City" },
 ];
 
 export default function ContactPage() {
-    const [formData, setFormData] = useState({
-        name: "",
-        email: "",
-        subject: "",
-        message: "",
-        priority: "normal"
-    });
+    const [mounted, setMounted] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [submitted, setSubmitted] = useState(false);
+    const [isSubmitted, setIsSubmitted] = useState(false);
+    const [formData, setFormData] = useState<FormData>({
+        firstName: "",
+        lastName: "",
+        email: "",
+        company: "",
+        message: "",
+        priority: "normal",
+        agreeToTerms: false,
+    });
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    const handleInputChange = (
+        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    ) => {
         const { name, value } = e.target;
-        setFormData(prev => ({
+        setFormData((prev) => ({
             ...prev,
-            [name]: value
+            [name]: value,
+        }));
+    };
+
+    const handleSelectChange = (value: string) => {
+        setFormData((prev) => ({
+            ...prev,
+            priority: value,
+        }));
+    };
+
+    const handleCheckboxChange = (checked: boolean) => {
+        setFormData((prev) => ({
+            ...prev,
+            agreeToTerms: checked,
         }));
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        if (!formData.agreeToTerms) {
+            alert("Please agree to the Terms of Service and Privacy Policy");
+            return;
+        }
+
         setIsSubmitting(true);
 
         try {
-            // Basic validation
-            if (!formData.name.trim() || !formData.email.trim() || !formData.subject.trim() || !formData.message.trim()) {
-                throw new Error("Please fill in all required fields");
-            }
+            // Simulate API call
+            await new Promise((resolve) => setTimeout(resolve, 2000));
 
-            // Email validation
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(formData.email)) {
-                throw new Error("Please enter a valid email address");
-            }
-
-            // Simulate form submission with API call
-            await new Promise(resolve => setTimeout(resolve, 2000));
-
-            setIsSubmitting(false);
-            setSubmitted(true);
+            setIsSubmitted(true);
             setFormData({
-                name: "",
+                firstName: "",
+                lastName: "",
                 email: "",
-                subject: "",
+                company: "",
                 message: "",
-                priority: "normal"
+                priority: "normal",
+                agreeToTerms: false,
             });
         } catch (error) {
+            console.error("Form submission error:", error);
+        } finally {
             setIsSubmitting(false);
-            alert(error instanceof Error ? error.message : "An error occurred. Please try again.");
         }
     };
 
-    return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-            {/* Header */}
-            <div className="bg-white/80 dark:bg-gray-950/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800">
-                <div className="container mx-auto px-6 py-4">
-                    <Link href="/" className="inline-flex items-center text-purple-600 hover:text-purple-700 transition-colors">
-                        <ArrowLeft className="w-4 h-4 mr-2" />
-                        Back to Home
-                    </Link>
-                </div>
-            </div>
+    const resetForm = () => {
+        setIsSubmitted(false);
+    };
 
-            <div className="container mx-auto px-6 py-12 space-y-16">
+    if (!mounted) {
+        return null;
+    }
+
+    return (
+        <div className="min-h-screen bg-white dark:bg-black transition-colors duration-300">
+            <div className="w-full max-w-7xl mx-auto px-4 md:px-6 py-16">
                 {/* Hero Section */}
-                <section className="text-center max-w-4xl mx-auto">
-                    <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent mb-6">
+                <div className="mb-20">
+                    <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-6 text-black dark:text-white">
                         Contact Us
                     </h1>
-                    <p className="text-xl text-gray-600 dark:text-gray-300 leading-relaxed">
-                        Have questions about your next micro-adventure? We're here to help you every step of the way.
+                    <div className="w-24 h-1 bg-black dark:bg-white mb-8"></div>
+                    <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl leading-relaxed">
+                        Ready to start your next project? Our team is here to help you succeed.
+                        Reach out and let`s discuss how we can bring your ideas to life.
                     </p>
-                </section>
+                </div>
 
-                {/* Contact Methods */}
-                <section className="max-w-6xl mx-auto">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="grid gap-16 lg:grid-cols-2 max-w-7xl mx-auto">
+                    {/* Contact Methods */}
+                    <div className="space-y-6">
                         {contactMethods.map((method, index) => (
-                            <Card key={index} className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border-0 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105">
-                                <CardContent className="p-6 text-center">
-                                    <div className="w-16 h-16 bg-gradient-to-r from-purple-600 to-blue-600 rounded-2xl flex items-center justify-center text-white mx-auto mb-4">
-                                        {method.icon}
+                            <Card
+                                key={index}
+                                className="border border-gray-200 dark:border-gray-800 hover:border-black dark:hover:border-white transition-all duration-300 hover:shadow-lg group bg-white dark:bg-black"
+                            >
+                                <CardContent className="p-8">
+                                    <div className="flex items-start gap-6">
+                                        <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-none border-2 border-gray-200 dark:border-gray-800 group-hover:border-black dark:group-hover:border-white group-hover:bg-black dark:group-hover:bg-white transition-all duration-300">
+                                            <div className="text-black dark:text-white group-hover:text-white dark:group-hover:text-black transition-colors duration-300">
+                                                {method.icon}
+                                            </div>
+                                        </div>
+                                        <div className="min-w-0 flex-1">
+                                            <h3 className="font-bold text-xl mb-2 text-black dark:text-white">{method.title}</h3>
+                                            <p className="text-gray-600 dark:text-gray-400 mb-3 text-sm leading-relaxed">
+                                                {method.description}
+                                            </p>
+                                            <a
+                                                href={method.href}
+                                                className="text-black dark:text-white font-medium border-b border-transparent hover:border-black dark:hover:border-white transition-all duration-200 pb-1"
+                                            >
+                                                {method.contact}
+                                            </a>
+                                        </div>
                                     </div>
-                                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
-                                        {method.title}
-                                    </h3>
-                                    <p className="text-gray-600 dark:text-gray-300 text-sm mb-3">
-                                        {method.description}
-                                    </p>
-                                    <p className="text-purple-600 dark:text-purple-400 font-medium mb-4">
-                                        {method.contact}
-                                    </p>
-                                    <Button
-                                        variant="outline"
-                                        size="sm"
-                                        className="w-full border-purple-600 text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900/20"
-                                    >
-                                        {method.action}
-                                    </Button>
                                 </CardContent>
                             </Card>
                         ))}
                     </div>
-                </section>
 
-                {/* Contact Form */}
-                <section className="max-w-4xl mx-auto">
-                    <div className="text-center mb-8">
-                        <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
-                            Send Us a Message
-                        </h2>
-                        <p className="text-gray-600 dark:text-gray-300">
-                            Fill out the form below and we'll get back to you as soon as possible.
-                        </p>
-                    </div>
-
-                    <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border-0 shadow-xl">
-                        <CardContent className="p-8">
-                            {submitted ? (
-                                <div className="text-center py-12">
-                                    <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                                        <Send className="w-8 h-8 text-white" />
-                                    </div>
-                                    <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-                                        Message Sent Successfully!
-                                    </h3>
-                                    <p className="text-gray-600 dark:text-gray-300 mb-6">
-                                        Thank you for contacting us. We'll get back to you within 24 hours.
+                    {/* Contact Form */}
+                    <div>
+                        <Card className="border-2 border-gray-200 dark:border-gray-800 shadow-2xl bg-white dark:bg-black">
+                            <CardHeader className="pb-6 border-b border-gray-100 dark:border-gray-900">
+                                <div className="text-center">
+                                    <h2 className="text-2xl font-bold mb-3 text-black dark:text-white">Send us a message</h2>
+                                    <p className="text-gray-600 dark:text-gray-400">
+                                        Fill out the form below and we will get back to you within 24 hours.
                                     </p>
-                                    <Button
-                                        onClick={() => setSubmitted(false)}
-                                        className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
-                                    >
-                                        Send Another Message
-                                    </Button>
                                 </div>
-                            ) : (
-                                <form onSubmit={handleSubmit} className="space-y-6">
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        <div>
-                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                                Full Name *
-                                            </label>
-                                            <Input
-                                                type="text"
-                                                name="name"
-                                                value={formData.name}
-                                                onChange={handleInputChange}
-                                                required
-                                                className="w-full"
-                                                placeholder="Enter your full name"
-                                            />
+                            </CardHeader>
+                            <CardContent className="p-8">
+                                {isSubmitted ? (
+                                    <div className="text-center py-12">
+                                        <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full border-2 border-black dark:border-white">
+                                            <CheckCircle className="h-10 w-10 text-black dark:text-white" />
                                         </div>
-                                        <div>
-                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                                Email Address *
-                                            </label>
+                                        <h3 className="mb-4 text-2xl font-bold text-black dark:text-white">Message Sent Successfully!</h3>
+                                        <p className="mb-8 text-gray-600 dark:text-gray-400">
+                                            Thank you for contacting us. We will get back to you within 24 hours.
+                                        </p>
+                                        <Button
+                                            onClick={resetForm}
+                                            className="bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 px-8 py-3 font-medium"
+                                        >
+                                            Send Another Message
+                                        </Button>
+                                    </div>
+                                ) : (
+                                    <form onSubmit={handleSubmit} className="space-y-8">
+                                        <div className="grid grid-cols-2 gap-6">
+                                            <div className="space-y-3">
+                                                <Label htmlFor="firstName" className="text-black dark:text-white font-medium">First Name *</Label>
+                                                <Input
+                                                    id="firstName"
+                                                    name="firstName"
+                                                    placeholder="John"
+                                                    required
+                                                    value={formData.firstName}
+                                                    onChange={handleInputChange}
+                                                    className="border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-white bg-white dark:bg-black h-12 rounded-none"
+                                                />
+                                            </div>
+                                            <div className="space-y-3">
+                                                <Label htmlFor="lastName" className="text-black dark:text-white font-medium">Last Name *</Label>
+                                                <Input
+                                                    id="lastName"
+                                                    name="lastName"
+                                                    placeholder="Doe"
+                                                    required
+                                                    value={formData.lastName}
+                                                    onChange={handleInputChange}
+                                                    className="border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-white bg-white dark:bg-black h-12 rounded-none"
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div className="space-y-3">
+                                            <Label htmlFor="email" className="text-black dark:text-white font-medium">Email Address *</Label>
                                             <Input
                                                 type="email"
+                                                id="email"
                                                 name="email"
+                                                placeholder="john@company.com"
+                                                required
                                                 value={formData.email}
                                                 onChange={handleInputChange}
-                                                required
-                                                className="w-full"
-                                                placeholder="Enter your email address"
+                                                className="border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-white bg-white dark:bg-black h-12 rounded-none"
                                             />
                                         </div>
-                                    </div>
 
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        <div>
-                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                                Subject *
-                                            </label>
+                                        <div className="space-y-3">
+                                            <Label htmlFor="company" className="text-black dark:text-white font-medium">Company</Label>
                                             <Input
-                                                type="text"
-                                                name="subject"
-                                                value={formData.subject}
+                                                id="company"
+                                                name="company"
+                                                placeholder="Your Company"
+                                                value={formData.company}
                                                 onChange={handleInputChange}
-                                                required
-                                                className="w-full"
-                                                placeholder="What's this about?"
+                                                className="border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-white bg-white dark:bg-black h-12 rounded-none"
                                             />
                                         </div>
-                                        <div>
-                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                                Priority
-                                            </label>
-                                            <select
-                                                name="priority"
-                                                value={formData.priority}
-                                                onChange={handleInputChange}
-                                                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                                            >
-                                                <option value="low">Low Priority</option>
-                                                <option value="normal">Normal Priority</option>
-                                                <option value="high">High Priority</option>
-                                                <option value="urgent">Urgent</option>
-                                            </select>
+
+                                        <div className="space-y-3">
+                                            <Label htmlFor="priority" className="text-black dark:text-white font-medium">Priority</Label>
+                                            <Select value={formData.priority} onValueChange={handleSelectChange}>
+                                                <SelectTrigger className="border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-white bg-white dark:bg-black h-12 rounded-none">
+                                                    <SelectValue placeholder="Select priority" />
+                                                </SelectTrigger>
+                                                <SelectContent className="bg-white dark:bg-black border-gray-300 dark:border-gray-700">
+                                                    <SelectItem value="low">Low Priority</SelectItem>
+                                                    <SelectItem value="normal">Normal Priority</SelectItem>
+                                                    <SelectItem value="high">High Priority</SelectItem>
+                                                    <SelectItem value="urgent">Urgent</SelectItem>
+                                                </SelectContent>
+                                            </Select>
                                         </div>
-                                    </div>
 
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                            Message *
-                                        </label>
-                                        <textarea
-                                            name="message"
-                                            value={formData.message}
-                                            onChange={handleInputChange}
-                                            required
-                                            rows={6}
-                                            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
-                                            placeholder="Tell us how we can help you..."
-                                        />
-                                    </div>
+                                        <div className="space-y-3">
+                                            <Label htmlFor="message" className="text-black dark:text-white font-medium">Message *</Label>
+                                            <Textarea
+                                                id="message"
+                                                name="message"
+                                                placeholder="Tell us about your project, goals, or how we can help..."
+                                                rows={6}
+                                                required
+                                                value={formData.message}
+                                                onChange={handleInputChange}
+                                                className="border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-white bg-white dark:bg-black resize-none rounded-none"
+                                            />
+                                        </div>
 
-                                    <Button
-                                        type="submit"
-                                        disabled={isSubmitting}
-                                        className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white py-3 rounded-lg shadow-lg transform transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
-                                    >
-                                        {isSubmitting ? (
-                                            <>
-                                                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                                                Sending Message...
-                                            </>
-                                        ) : (
-                                            <>
-                                                <Send className="w-4 h-4 mr-2" />
-                                                Send Message
-                                            </>
-                                        )}
-                                    </Button>
-                                </form>
-                            )}
+                                        <div className="flex items-start space-x-3">
+                                            <Checkbox
+                                                id="agreeToTerms"
+                                                checked={formData.agreeToTerms}
+                                                onCheckedChange={handleCheckboxChange}
+                                                className="mt-1 border-gray-300 dark:border-gray-700 data-[state=checked]:bg-black dark:data-[state=checked]:bg-white data-[state=checked]:border-black dark:data-[state=checked]:border-white"
+                                            />
+                                            <Label
+                                                htmlFor="agreeToTerms"
+                                                className="text-sm leading-relaxed text-gray-600 dark:text-gray-400 cursor-pointer"
+                                            >
+                                                I agree to the{" "}
+                                                <a href="#" className="text-black dark:text-white font-medium border-b border-transparent hover:border-black dark:hover:border-white">
+                                                    Terms of Service
+                                                </a>{" "}
+                                                and{" "}
+                                                <a href="#" className="text-black dark:text-white font-medium border-b border-transparent hover:border-black dark:hover:border-white">
+                                                    Privacy Policy
+                                                </a>
+                                            </Label>
+                                        </div>
+
+                                        <Button
+                                            type="submit"
+                                            disabled={isSubmitting || !formData.agreeToTerms}
+                                            className="w-full bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 h-14 font-medium text-lg rounded-none transition-all duration-200 disabled:opacity-50"
+                                        >
+                                            {isSubmitting ? (
+                                                <>
+                                                    <Loader2 className="mr-3 h-5 w-5 animate-spin" />
+                                                    Sending Message...
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <Send className="mr-3 h-5 w-5" />
+                                                    Submit Message
+                                                </>
+                                            )}
+                                        </Button>
+                                    </form>
+                                )}
+                            </CardContent>
+                        </Card>
+                    </div>
+                </div>
+
+                {/* Office Information */}
+                <div className="mt-24 max-w-7xl mx-auto">
+                    <Separator className="mb-16 bg-gray-200 dark:bg-gray-800" />
+                    <Card className="border-2 border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-950">
+                        <CardContent className="p-12">
+                            <div className="grid gap-12 md:grid-cols-2">
+                                <div className="space-y-6">
+                                    <h3 className="text-xl font-bold flex items-center gap-3 text-black dark:text-white">
+                                        <Clock className="h-6 w-6" />
+                                        Office Hours
+                                    </h3>
+                                    <div className="space-y-4">
+                                        {officeHours.map((schedule, index) => (
+                                            <div key={index} className="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700 last:border-b-0">
+                                                <span className="font-medium text-black dark:text-white">{schedule.day}</span>
+                                                <span className="text-gray-600 dark:text-gray-400">{schedule.hours}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                                <div className="space-y-6">
+                                    <h3 className="text-xl font-bold flex items-center gap-3 text-black dark:text-white">
+                                        <Mail className="h-6 w-6" />
+                                        Contact Information
+                                    </h3>
+                                    <div className="space-y-4">
+                                        {contactInfo.map((info, index) => (
+                                            <div key={index} className="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700 last:border-b-0">
+                                                <span className="font-medium text-black dark:text-white">{info.label}</span>
+                                                <span className="text-gray-600 dark:text-gray-400">{info.value}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
                         </CardContent>
                     </Card>
-                </section>
-
-                {/* Office Locations */}
-                <section className="max-w-6xl mx-auto">
-                    <div className="text-center mb-12">
-                        <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
-                            Our Offices
-                        </h2>
-                        <p className="text-gray-600 dark:text-gray-300">
-                            Visit us at one of our global locations
-                        </p>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        {officeLocations.map((office, index) => (
-                            <Card key={index} className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border-0 shadow-xl">
-                                <CardContent className="p-6">
-                                    <div className="flex items-center mb-4">
-                                        <div className="w-12 h-12 bg-gradient-to-r from-purple-600 to-blue-600 rounded-xl flex items-center justify-center text-white mr-4">
-                                            <Globe className="w-6 h-6" />
-                                        </div>
-                                        <h3 className="text-xl font-bold text-gray-900 dark:text-white">
-                                            {office.city}
-                                        </h3>
-                                    </div>
-
-                                    <div className="space-y-3">
-                                        <div className="flex items-start space-x-3">
-                                            <MapPin className="w-5 h-5 text-gray-500 mt-0.5 flex-shrink-0" />
-                                            <p className="text-gray-600 dark:text-gray-300 text-sm">
-                                                {office.address}
-                                            </p>
-                                        </div>
-
-                                        <div className="flex items-center space-x-3">
-                                            <Phone className="w-5 h-5 text-gray-500 flex-shrink-0" />
-                                            <p className="text-gray-600 dark:text-gray-300 text-sm">
-                                                {office.phone}
-                                            </p>
-                                        </div>
-
-                                        <div className="flex items-center space-x-3">
-                                            <Clock className="w-5 h-5 text-gray-500 flex-shrink-0" />
-                                            <p className="text-gray-600 dark:text-gray-300 text-sm">
-                                                {office.hours}
-                                            </p>
-                                        </div>
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        ))}
-                    </div>
-                </section>
-
-                {/* FAQ Section */}
-                <section className="max-w-4xl mx-auto">
-                    <div className="text-center mb-12">
-                        <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
-                            Frequently Asked Questions
-                        </h2>
-                        <p className="text-gray-600 dark:text-gray-300">
-                            Quick answers to common questions
-                        </p>
-                    </div>
-
-                    <div className="space-y-4">
-                        {faqItems.map((item, index) => (
-                            <Card key={index} className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border-0 shadow-lg">
-                                <CardContent className="p-6">
-                                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">
-                                        {item.question}
-                                    </h3>
-                                    <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-                                        {item.answer}
-                                    </p>
-                                </CardContent>
-                            </Card>
-                        ))}
-                    </div>
-
-                    <div className="text-center mt-8">
-                        <p className="text-gray-600 dark:text-gray-300 mb-4">
-                            Can't find what you're looking for?
-                        </p>
-                        <Link href="/help">
-                            <Button variant="outline" className="border-purple-600 text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900/20">
-                                Visit Help Center
-                            </Button>
-                        </Link>
-                    </div>
-                </section>
+                </div>
             </div>
         </div>
     );

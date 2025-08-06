@@ -8,7 +8,8 @@ import { Toaster } from "@/components/ui/sonner";
 import React from "react";
 import './globals.css'
 import Header from "@/components/Header/Header";
-import Footer from "@/components/Footer/Footer";
+import { Footer } from "@/components/Footer/Footer";
+
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

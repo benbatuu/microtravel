@@ -4,7 +4,9 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
 import {
     ArrowLeft,
     Search,
@@ -15,47 +17,49 @@ import {
     Settings,
     Shield,
     ChevronDown,
-    ChevronUp,
+    ChevronRight,
     MessageCircle,
     Phone,
-    Mail
+    Mail,
+    FileText,
+    Users,
 } from "lucide-react";
 
 const categories = [
     {
         id: "getting-started",
         title: "Getting Started",
-        icon: <BookOpen className="w-6 h-6" />,
+        icon: <BookOpen className="h-5 w-5" />,
         description: "Learn the basics of using MicroTravel",
-        color: "from-blue-500 to-blue-600"
+        count: 4
     },
     {
         id: "booking",
         title: "Booking & Reservations",
-        icon: <MapPin className="w-6 h-6" />,
+        icon: <MapPin className="h-5 w-5" />,
         description: "Everything about making and managing bookings",
-        color: "from-green-500 to-green-600"
+        count: 5
     },
     {
         id: "payment",
         title: "Payment & Billing",
-        icon: <CreditCard className="w-6 h-6" />,
+        icon: <CreditCard className="h-5 w-5" />,
         description: "Payment methods, billing, and refunds",
-        color: "from-purple-500 to-purple-600"
+        count: 5
     },
     {
         id: "account",
         title: "Account Management",
-        icon: <Settings className="w-6 h-6" />,
+        icon: <Settings className="h-5 w-5" />,
         description: "Managing your profile and preferences",
-        color: "from-orange-500 to-orange-600"
+        count: 4
     },
     {
         id: "safety",
         title: "Safety & Security",
-        icon: <Shield className="w-6 h-6" />,
+        icon: <Shield className="h-5 w-5" />,
         description: "Staying safe and secure while traveling",
-        color: "from-red-500 to-red-600"
+        count: 4
     }
 ];
 
@@ -164,23 +168,26 @@ const contactOptions = [
     {
         title: "Live Chat",
         description: "Chat with our support team",
-        icon: <MessageCircle className="w-6 h-6" />,
+        icon: <MessageCircle className="h-5 w-5" />,
         action: "Start Chat",
-        availability: "Available 9 AM - 6 PM EST"
+        availability: "Available 9 AM - 6 PM EST",
+        status: "online"
     },
     {
         title: "Phone Support",
         description: "Speak with us directly",
-        icon: <Phone className="w-6 h-6" />,
+        icon: <Phone className="h-5 w-5" />,
         action: "Call Now",
-        availability: "+1 (555) 123-4567"
+        availability: "+1 (555) 123-4567",
+        status: "available"
     },
     {
         title: "Email Support",
         description: "Send us a detailed message",
-        icon: <Mail className="w-6 h-6" />,
+        icon: <Mail className="h-5 w-5" />,
         action: "Send Email",
-        availability: "support@microtravel.com"
+        availability: "support@microtravel.com",
+        status: "24h"
     }
 ];
 
@@ -199,109 +206,117 @@ export default function HelpPage() {
         setExpandedFAQ(expandedFAQ === index ? null : index);
     };
 
-    return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-            {/* Header */}
-            <div className="bg-white/80 dark:bg-gray-950/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800">
-                <div className="container mx-auto px-6 py-4">
-                    <Link href="/" className="inline-flex items-center text-purple-600 hover:text-purple-700 transition-colors">
-                        <ArrowLeft className="w-4 h-4 mr-2" />
-                        Back to Home
-                    </Link>
-                </div>
-            </div>
+    const selectedCategoryData = categories.find(cat => cat.id === selectedCategory);
 
-            <div className="container mx-auto px-6 py-12 space-y-12">
+    return (
+        <div className="min-h-screen bg-background">
+            <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
                 {/* Hero Section */}
-                <section className="text-center max-w-4xl mx-auto">
-                    <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent mb-6">
+                <section className="text-center space-y-4">
+                    <h1 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
                         Help Center
                     </h1>
-                    <p className="text-xl text-gray-600 dark:text-gray-300 leading-relaxed mb-8">
+                    <p className="mx-auto max-w-[700px] text-lg text-muted-foreground">
                         Find answers to your questions and get the help you need for your micro-travel adventures.
                     </p>
 
                     {/* Search Bar */}
-                    <div className="relative max-w-2xl mx-auto">
-                        <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                        <Input
-                            type="text"
-                            placeholder="Search for help articles..."
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            className="pl-12 pr-4 py-4 text-lg rounded-full border-2 border-gray-200 dark:border-gray-700 focus:border-purple-500 dark:focus:border-purple-400"
-                        />
+                    <div className="mx-auto max-w-md">
+                        <div className="relative">
+                            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                            <Input
+                                type="text"
+                                placeholder="Search help articles..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                className="pl-10"
+                            />
+                        </div>
                     </div>
                 </section>
 
                 {/* Categories */}
-                <section className="max-w-6xl mx-auto">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-                        {categories.map((category) => (
-                            <Card
-                                key={category.id}
-                                className={`cursor-pointer transition-all duration-300 hover:scale-105 ${selectedCategory === category.id
-                                    ? 'ring-2 ring-purple-500 bg-white dark:bg-gray-800'
-                                    : 'bg-white/80 dark:bg-gray-800/80 hover:bg-white dark:hover:bg-gray-800'
-                                    } backdrop-blur-lg border-0 shadow-xl`}
-                                onClick={() => setSelectedCategory(category.id)}
-                            >
-                                <CardContent className="p-6 text-center">
-                                    <div className={`w-16 h-16 bg-gradient-to-r ${category.color} rounded-2xl flex items-center justify-center text-white mx-auto mb-4`}>
-                                        {category.icon}
+                <div className="w-full max-w-7xl mx-auto grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+                    {categories.map((category) => (
+                        <Card
+                            key={category.id}
+                            className={`cursor-pointer transition-all hover:shadow-md ${selectedCategory === category.id
+                                ? 'ring-2 ring-ring shadow-md'
+                                : 'hover:border-border'
+                                }`}
+                            onClick={() => setSelectedCategory(category.id)}
+                        >
+                            <CardContent className="p-6">
+                                <div className="space-y-3">
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted">
+                                            {category.icon}
+                                        </div>
+                                        <Badge variant="secondary" className="text-xs">
+                                            {category.count}
+                                        </Badge>
                                     </div>
-                                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
-                                        {category.title}
-                                    </h3>
-                                    <p className="text-gray-600 dark:text-gray-300 text-sm">
-                                        {category.description}
-                                    </p>
-                                </CardContent>
-                            </Card>
-                        ))}
-                    </div>
-                </section>
+                                    <div className="space-y-1">
+                                        <h3 className="font-semibold leading-none">
+                                            {category.title}
+                                        </h3>
+                                        <p className="text-sm text-muted-foreground line-clamp-2">
+                                            {category.description}
+                                        </p>
+                                    </div>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    ))}
+                </div>
 
                 {/* FAQ Section */}
-                <section className="max-w-4xl mx-auto">
-                    <div className="text-center mb-8">
-                        <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
-                            {categories.find(cat => cat.id === selectedCategory)?.title} FAQ
-                        </h2>
-                        <p className="text-gray-600 dark:text-gray-300">
-                            {filteredFAQs.length} article{filteredFAQs.length !== 1 ? 's' : ''} found
-                        </p>
+                <section className="w-full max-w-7xl mx-auto space-y-6">
+                    <div className="flex items-center gap-4">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted">
+                            {selectedCategoryData?.icon}
+                        </div>
+                        <div>
+                            <h2 className="text-2xl font-bold tracking-tight">
+                                {selectedCategoryData?.title}
+                            </h2>
+                            <p className="text-muted-foreground">
+                                {filteredFAQs.length} article{filteredFAQs.length !== 1 ? 's' : ''} found
+                            </p>
+                        </div>
                     </div>
 
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                         {filteredFAQs.map((faq, index) => (
-                            <Card key={index} className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border-0 shadow-lg">
+                            <Card key={index}>
                                 <CardContent className="p-0">
                                     <button
                                         onClick={() => toggleFAQ(index)}
-                                        className="w-full p-6 text-left flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+                                        className="flex w-full items-center justify-between p-6 text-left hover:bg-muted/50 transition-colors"
                                     >
-                                        <div className="flex items-center space-x-4">
-                                            <HelpCircle className="w-5 h-5 text-purple-600 dark:text-purple-400 flex-shrink-0" />
-                                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                                        <div className="flex items-center gap-3">
+                                            <HelpCircle className="h-4 w-4 text-muted-foreground shrink-0" />
+                                            <span className="font-medium">
                                                 {faq.question}
-                                            </h3>
+                                            </span>
                                         </div>
-                                        {expandedFAQ === index ? (
-                                            <ChevronUp className="w-5 h-5 text-gray-500" />
-                                        ) : (
-                                            <ChevronDown className="w-5 h-5 text-gray-500" />
-                                        )}
+                                        <ChevronDown
+                                            className={`h-4 w-4 text-muted-foreground transition-transform ${expandedFAQ === index ? 'rotate-180' : ''
+                                                }`}
+                                        />
                                     </button>
 
                                     {expandedFAQ === index && (
-                                        <div className="px-6 pb-6">
-                                            <div className="pl-9 border-l-2 border-purple-200 dark:border-purple-800">
-                                                <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-                                                    {faq.answer}
-                                                </p>
+                                        <>
+                                            <Separator />
+                                            <div className="p-6 pt-4">
+                                                <div className="pl-7">
+                                                    <p className="text-muted-foreground leading-relaxed">
+                                                        {faq.answer}
+                                                    </p>
+                                                </div>
                                             </div>
-                                        </div>
+                                        </>
                                     )}
                                 </CardContent>
                             </Card>
@@ -309,19 +324,22 @@ export default function HelpPage() {
                     </div>
 
                     {filteredFAQs.length === 0 && (
-                        <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border-0 shadow-lg">
-                            <CardContent className="p-12 text-center">
-                                <HelpCircle className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                                <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-                                    No results found
-                                </h3>
-                                <p className="text-gray-600 dark:text-gray-300 mb-6">
-                                    We couldn`t find any articles matching your search. Try different keywords or browse our categories.
-                                </p>
+                        <Card>
+                            <CardContent className="p-12 text-center space-y-4">
+                                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-muted mx-auto">
+                                    <HelpCircle className="h-8 w-8 text-muted-foreground" />
+                                </div>
+                                <div className="space-y-2">
+                                    <h3 className="text-lg font-semibold">
+                                        No results found
+                                    </h3>
+                                    <p className="text-muted-foreground">
+                                        We couldn`t find any articles matching your search. Try different keywords or browse our categories.
+                                    </p>
+                                </div>
                                 <Button
                                     onClick={() => setSearchQuery("")}
                                     variant="outline"
-                                    className="border-purple-600 text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900/20"
                                 >
                                     Clear Search
                                 </Button>
@@ -331,35 +349,52 @@ export default function HelpPage() {
                 </section>
 
                 {/* Contact Support */}
-                <section className="max-w-6xl mx-auto">
-                    <div className="text-center mb-8">
-                        <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+                <section className="w-full max-w-7xl mx-auto space-y-6">
+                    <div className="text-center space-y-2">
+                        <h2 className="text-2xl font-bold tracking-tight">
                             Still Need Help?
                         </h2>
-                        <p className="text-gray-600 dark:text-gray-300">
+                        <p className="text-muted-foreground">
                             Our support team is here to help you with any questions or issues.
                         </p>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="w-full max-w-7xl mx-auto grid gap-6 md:grid-cols-3">
                         {contactOptions.map((option, index) => (
-                            <Card key={index} className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border-0 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105">
-                                <CardContent className="p-8 text-center">
-                                    <div className="w-16 h-16 bg-gradient-to-r from-purple-600 to-blue-600 rounded-2xl flex items-center justify-center text-white mx-auto mb-4">
-                                        {option.icon}
+                            <Card key={index} className="relative hover:shadow-md transition-shadow">
+                                <CardHeader className="pb-3">
+                                    <div className="flex items-center gap-3">
+                                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted">
+                                            {option.icon}
+                                        </div>
+                                        <div>
+                                            <CardTitle className="text-base">
+                                                {option.title}
+                                            </CardTitle>
+                                            <Badge
+                                                variant={option.status === 'online' ? 'default' : 'secondary'}
+                                                className="text-xs mt-1"
+                                            >
+                                                {option.status === 'online' && <div className="w-2 h-2 bg-green-500 rounded-full mr-1" />}
+                                                {option.status === 'online' ? 'Online' :
+                                                    option.status === 'available' ? 'Available' : '24h Response'}
+                                            </Badge>
+                                        </div>
                                     </div>
-                                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-                                        {option.title}
-                                    </h3>
-                                    <p className="text-gray-600 dark:text-gray-300 text-sm mb-3">
+                                </CardHeader>
+                                <CardContent className="space-y-4">
+                                    <p className="text-sm text-muted-foreground">
                                         {option.description}
                                     </p>
-                                    <p className="text-purple-600 dark:text-purple-400 font-medium text-sm mb-6">
-                                        {option.availability}
-                                    </p>
-                                    <Button className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white">
-                                        {option.action}
-                                    </Button>
+                                    <div className="space-y-2">
+                                        <p className="text-sm font-medium">
+                                            {option.availability}
+                                        </p>
+                                        <Button className="w-full">
+                                            {option.action}
+                                            <ChevronRight className="ml-2 h-4 w-4" />
+                                        </Button>
+                                    </div>
                                 </CardContent>
                             </Card>
                         ))}
@@ -367,28 +402,33 @@ export default function HelpPage() {
                 </section>
 
                 {/* Additional Resources */}
-                <section className="max-w-4xl mx-auto">
-                    <Card className="bg-gradient-to-r from-purple-600/10 to-blue-600/10 backdrop-blur-lg border-0 shadow-xl">
-                        <CardContent className="p-8 text-center">
-                            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+                <section className="max-w-7xl w-full mx-auto">
+                    <Card>
+                        <CardHeader className="text-center">
+                            <CardTitle className="text-xl">
                                 Additional Resources
-                            </h2>
-                            <p className="text-gray-600 dark:text-gray-300 mb-6">
+                            </CardTitle>
+                            <p className="text-muted-foreground">
                                 Explore more resources to make the most of your MicroTravel experience.
                             </p>
-                            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                        </CardHeader>
+                        <CardContent>
+                            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                                 <Link href="/about">
-                                    <Button variant="outline" className="border-purple-600 text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900/20">
+                                    <Button variant="outline" className="w-full justify-start">
+                                        <FileText className="mr-2 h-4 w-4" />
                                         About MicroTravel
                                     </Button>
                                 </Link>
                                 <Link href="/contact">
-                                    <Button variant="outline" className="border-purple-600 text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900/20">
+                                    <Button variant="outline" className="w-full justify-start">
+                                        <Users className="mr-2 h-4 w-4" />
                                         Contact Us
                                     </Button>
                                 </Link>
                                 <Link href="/privacy">
-                                    <Button variant="outline" className="border-purple-600 text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900/20">
+                                    <Button variant="outline" className="w-full justify-start">
+                                        <Shield className="mr-2 h-4 w-4" />
                                         Privacy Policy
                                     </Button>
                                 </Link>
@@ -396,7 +436,7 @@ export default function HelpPage() {
                         </CardContent>
                     </Card>
                 </section>
-            </div>
+            </main>
         </div>
     );
 }

@@ -2,14 +2,42 @@
 
 import React from "react";
 import Link from "next/link";
-import { Card, CardContent } from "@/components/ui/card";
-import { ArrowLeft, FileText, Scale, CreditCard, Shield, AlertTriangle, Mail } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import {
+    FileText,
+    Scale,
+    CreditCard,
+    Shield,
+    AlertTriangle,
+    Mail,
+    BookOpen,
+    Users,
+    Globe,
+    Clock,
+    ChevronRight
+} from "lucide-react";
 
-const sections = [
+// Define types for the content structure
+interface ContentItem {
+    subtitle?: string;
+    text: string;
+}
+
+interface Section {
+    id: string;
+    title: string;
+    icon: React.ReactNode;
+    content: ContentItem[];
+}
+
+const sections: Section[] = [
     {
         id: "acceptance",
         title: "Acceptance of Terms",
-        icon: <FileText className="w-6 h-6" />,
+        icon: <FileText className="h-5 w-5" />,
         content: [
             {
                 text: "By accessing and using MicroTravel's website, mobile application, and services, you accept and agree to be bound by the terms and provision of this agreement. If you do not agree to abide by the above, please do not use this service."
@@ -22,7 +50,7 @@ const sections = [
     {
         id: "services",
         title: "Description of Services",
-        icon: <Shield className="w-6 h-6" />,
+        icon: <Shield className="h-5 w-5" />,
         content: [
             {
                 subtitle: "Travel Booking Services",
@@ -41,7 +69,7 @@ const sections = [
     {
         id: "user-accounts",
         title: "User Accounts and Registration",
-        icon: <Shield className="w-6 h-6" />,
+        icon: <Users className="h-5 w-5" />,
         content: [
             {
                 subtitle: "Account Creation",
@@ -60,7 +88,7 @@ const sections = [
     {
         id: "booking-payment",
         title: "Booking and Payment Terms",
-        icon: <CreditCard className="w-6 h-6" />,
+        icon: <CreditCard className="h-5 w-5" />,
         content: [
             {
                 subtitle: "Booking Process",
@@ -83,7 +111,7 @@ const sections = [
     {
         id: "user-conduct",
         title: "User Conduct and Prohibited Uses",
-        icon: <AlertTriangle className="w-6 h-6" />,
+        icon: <AlertTriangle className="h-5 w-5" />,
         content: [
             {
                 subtitle: "Acceptable Use",
@@ -102,7 +130,7 @@ const sections = [
     {
         id: "liability",
         title: "Limitation of Liability",
-        icon: <Scale className="w-6 h-6" />,
+        icon: <Scale className="h-5 w-5" />,
         content: [
             {
                 subtitle: "Service Disclaimer",
@@ -143,49 +171,52 @@ export default function TermsPage() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-            {/* Header */}
-            <div className="bg-white/80 dark:bg-gray-950/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800">
-                <div className="container mx-auto px-6 py-4">
-                    <Link href="/" className="inline-flex items-center text-purple-600 hover:text-purple-700 transition-colors">
-                        <ArrowLeft className="w-4 h-4 mr-2" />
-                        Back to Home
-                    </Link>
-                </div>
-            </div>
-
-            <div className="container mx-auto px-6 py-12">
-                <div className="max-w-6xl mx-auto">
+        <div className="min-h-screen bg-background">
+            <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <div className="max-w-7xl mx-auto">
                     {/* Hero Section */}
-                    <div className="text-center mb-12">
-                        <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent mb-6">
+                    <section className="text-center space-y-4 mb-12">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-muted text-sm font-medium mb-4">
+                            <Scale className="h-4 w-4" />
+                            Legal Document
+                        </div>
+                        <h1 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
                             Terms of Service
                         </h1>
-                        <p className="text-xl text-gray-600 dark:text-gray-300 leading-relaxed max-w-3xl mx-auto">
+                        <p className="mx-auto max-w-[700px] text-lg text-muted-foreground">
                             Please read these terms carefully before using our services. By using MicroTravel, you agree to these terms and conditions.
                         </p>
-                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-4">
+                        <div className="inline-flex items-center gap-2 text-sm text-muted-foreground">
+                            <Clock className="h-4 w-4" />
                             Last updated: January 1, 2025
-                        </p>
-                    </div>
+                        </div>
+                    </section>
 
                     <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
                         {/* Table of Contents */}
                         <div className="lg:col-span-1">
-                            <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border-0 shadow-xl sticky top-8">
-                                <CardContent className="p-6">
-                                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">
-                                        Table of Contents
-                                    </h3>
-                                    <nav className="space-y-2">
-                                        {tableOfContents.map((item) => (
-                                            <button
+                            <Card className="sticky top-24">
+                                <CardHeader>
+                                    <CardTitle className="text-lg flex items-center gap-2">
+                                        <BookOpen className="h-5 w-5" />
+                                        Contents
+                                    </CardTitle>
+                                </CardHeader>
+                                <CardContent className="pt-0">
+                                    <nav className="space-y-1">
+                                        {tableOfContents.map((item, index) => (
+                                            <Button
                                                 key={item.id}
+                                                variant="ghost"
+                                                size="sm"
                                                 onClick={() => scrollToSection(item.id)}
-                                                className="block w-full text-left text-sm text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors py-1"
+                                                className="w-full justify-start h-auto py-2 px-3 text-sm font-normal hover:bg-muted/80"
                                             >
-                                                {item.title}
-                                            </button>
+                                                <span className="text-muted-foreground mr-2">
+                                                    {String(index + 1).padStart(2, '0')}
+                                                </span>
+                                                <span className="truncate">{item.title}</span>
+                                            </Button>
                                         ))}
                                     </nav>
                                 </CardContent>
@@ -195,42 +226,52 @@ export default function TermsPage() {
                         {/* Main Content */}
                         <div className="lg:col-span-3 space-y-8">
                             {/* Introduction */}
-                            <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border-0 shadow-xl">
+                            <Card>
                                 <CardContent className="p-8">
-                                    <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-4">
-                                        Welcome to MicroTravel. These Terms of Service ("Terms") govern your use of our website,
-                                        mobile application, and services. Please read these Terms carefully before using our platform.
-                                    </p>
-                                    <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-                                        By accessing or using MicroTravel, you agree to be bound by these Terms and all applicable
-                                        laws and regulations. If you do not agree with any of these terms, you are prohibited from
-                                        using or accessing our services.
-                                    </p>
+                                    <div className="prose prose-gray dark:prose-invert max-w-none">
+                                        <p className="text-muted-foreground leading-relaxed mb-4">
+                                            Welcome to MicroTravel. These Terms of Service (`Terms``) govern your use of our website,
+                                            mobile application, and services. Please read these Terms carefully before using our platform.
+                                        </p>
+                                        <p className="text-muted-foreground leading-relaxed">
+                                            By accessing or using MicroTravel, you agree to be bound by these Terms and all applicable
+                                            laws and regulations. If you do not agree with any of these terms, you are prohibited from
+                                            using or accessing our services.
+                                        </p>
+                                    </div>
                                 </CardContent>
                             </Card>
 
                             {/* Main Sections */}
-                            {sections.map((section) => (
-                                <Card key={section.id} id={section.id} className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border-0 shadow-xl">
-                                    <CardContent className="p-8">
-                                        <div className="flex items-center mb-6">
-                                            <div className="w-12 h-12 bg-gradient-to-r from-purple-600 to-blue-600 rounded-xl flex items-center justify-center text-white mr-4">
+                            {sections.map((section, sectionIndex) => (
+                                <Card key={section.id} id={section.id}>
+                                    <CardHeader>
+                                        <div className="flex items-center gap-3">
+                                            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted">
                                                 {section.icon}
                                             </div>
-                                            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-                                                {section.title}
-                                            </h2>
+                                            <div className="flex-1">
+                                                <div className="flex items-center gap-2">
+                                                    <Badge variant="outline" className="text-xs">
+                                                        {String(sectionIndex + 1).padStart(2, '0')}
+                                                    </Badge>
+                                                    <CardTitle className="text-xl">
+                                                        {section.title}
+                                                    </CardTitle>
+                                                </div>
+                                            </div>
                                         </div>
-
+                                    </CardHeader>
+                                    <CardContent>
                                         <div className="space-y-6">
                                             {section.content.map((item, index) => (
-                                                <div key={index}>
+                                                <div key={index} className="space-y-3">
                                                     {item.subtitle && (
-                                                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">
+                                                        <h4 className="font-semibold text-foreground">
                                                             {item.subtitle}
-                                                        </h3>
+                                                        </h4>
                                                     )}
-                                                    <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
+                                                    <p className="text-muted-foreground leading-relaxed">
                                                         {item.text}
                                                     </p>
                                                 </div>
@@ -241,99 +282,145 @@ export default function TermsPage() {
                             ))}
 
                             {/* Additional Sections */}
-                            <Card id="intellectual-property" className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border-0 shadow-xl">
-                                <CardContent className="p-8">
-                                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
-                                        Intellectual Property Rights
-                                    </h2>
-                                    <div className="space-y-4">
-                                        <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-                                            The content, features, and functionality of our services are owned by MicroTravel and are
-                                            protected by international copyright, trademark, patent, trade secret, and other intellectual
-                                            property laws.
-                                        </p>
-                                        <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-                                            You may not reproduce, distribute, modify, create derivative works of, publicly display,
-                                            publicly perform, republish, download, store, or transmit any of our content without our
-                                            prior written consent.
-                                        </p>
+                            <Card id="intellectual-property">
+                                <CardHeader>
+                                    <div className="flex items-center gap-3">
+                                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted">
+                                            <Globe className="h-5 w-5" />
+                                        </div>
+                                        <div className="flex-1">
+                                            <div className="flex items-center gap-2">
+                                                <Badge variant="outline" className="text-xs">07</Badge>
+                                                <CardTitle className="text-xl">Intellectual Property Rights</CardTitle>
+                                            </div>
+                                        </div>
                                     </div>
+                                </CardHeader>
+                                <CardContent className="space-y-4">
+                                    <p className="text-muted-foreground leading-relaxed">
+                                        The content, features, and functionality of our services are owned by MicroTravel and are
+                                        protected by international copyright, trademark, patent, trade secret, and other intellectual
+                                        property laws.
+                                    </p>
+                                    <p className="text-muted-foreground leading-relaxed">
+                                        You may not reproduce, distribute, modify, create derivative works of, publicly display,
+                                        publicly perform, republish, download, store, or transmit any of our content without our
+                                        prior written consent.
+                                    </p>
                                 </CardContent>
                             </Card>
 
-                            <Card id="privacy" className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border-0 shadow-xl">
-                                <CardContent className="p-8">
-                                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
-                                        Privacy and Data Protection
-                                    </h2>
-                                    <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
+                            <Card id="privacy">
+                                <CardHeader>
+                                    <div className="flex items-center gap-3">
+                                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted">
+                                            <Shield className="h-5 w-5" />
+                                        </div>
+                                        <div className="flex-1">
+                                            <div className="flex items-center gap-2">
+                                                <Badge variant="outline" className="text-xs">08</Badge>
+                                                <CardTitle className="text-xl">Privacy and Data Protection</CardTitle>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </CardHeader>
+                                <CardContent className="space-y-4">
+                                    <p className="text-muted-foreground leading-relaxed">
                                         Your privacy is important to us. Our Privacy Policy explains how we collect, use, and protect
                                         your information when you use our services. By using our services, you agree to the collection
                                         and use of information in accordance with our Privacy Policy.
                                     </p>
-                                    <div className="mt-4">
-                                        <Link href="/privacy" className="text-purple-600 hover:text-purple-700 underline">
-                                            Read our Privacy Policy
+                                    <div>
+                                        <Link href="/privacy">
+                                            <Button variant="outline" className="gap-2">
+                                                Read our Privacy Policy
+                                                <ChevronRight className="h-4 w-4" />
+                                            </Button>
                                         </Link>
                                     </div>
                                 </CardContent>
                             </Card>
 
-                            <Card id="modifications" className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border-0 shadow-xl">
-                                <CardContent className="p-8">
-                                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
-                                        Modifications to Terms
-                                    </h2>
-                                    <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
+                            <Card id="modifications">
+                                <CardHeader>
+                                    <div className="flex items-center gap-3">
+                                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted">
+                                            <FileText className="h-5 w-5" />
+                                        </div>
+                                        <div className="flex-1">
+                                            <div className="flex items-center gap-2">
+                                                <Badge variant="outline" className="text-xs">09</Badge>
+                                                <CardTitle className="text-xl">Modifications to Terms</CardTitle>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </CardHeader>
+                                <CardContent>
+                                    <p className="text-muted-foreground leading-relaxed">
                                         We reserve the right to modify these Terms at any time. We will notify you of any changes by
-                                        posting the new Terms on this page and updating the "Last updated" date. Your continued use
+                                        posting the new Terms on this page and updating the `Last updated`` date. Your continued use
                                         of our services after any modifications constitutes acceptance of the new Terms.
                                     </p>
                                 </CardContent>
                             </Card>
 
-                            <Card id="governing-law" className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border-0 shadow-xl">
-                                <CardContent className="p-8">
-                                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
-                                        Governing Law and Dispute Resolution
-                                    </h2>
-                                    <div className="space-y-4">
-                                        <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-                                            These Terms are governed by and construed in accordance with the laws of the State of New York,
-                                            without regard to its conflict of law principles.
-                                        </p>
-                                        <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-                                            Any disputes arising from these Terms or your use of our services will be resolved through
-                                            binding arbitration in accordance with the rules of the American Arbitration Association.
-                                        </p>
+                            <Card id="governing-law">
+                                <CardHeader>
+                                    <div className="flex items-center gap-3">
+                                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted">
+                                            <Scale className="h-5 w-5" />
+                                        </div>
+                                        <div className="flex-1">
+                                            <div className="flex items-center gap-2">
+                                                <Badge variant="outline" className="text-xs">10</Badge>
+                                                <CardTitle className="text-xl">Governing Law and Dispute Resolution</CardTitle>
+                                            </div>
+                                        </div>
                                     </div>
+                                </CardHeader>
+                                <CardContent className="space-y-4">
+                                    <p className="text-muted-foreground leading-relaxed">
+                                        These Terms are governed by and construed in accordance with the laws of the State of New York,
+                                        without regard to its conflict of law principles.
+                                    </p>
+                                    <p className="text-muted-foreground leading-relaxed">
+                                        Any disputes arising from these Terms or your use of our services will be resolved through
+                                        binding arbitration in accordance with the rules of the American Arbitration Association.
+                                    </p>
                                 </CardContent>
                             </Card>
 
-                            <Card id="contact" className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border-0 shadow-xl">
-                                <CardContent className="p-8">
-                                    <div className="flex items-center mb-6">
-                                        <div className="w-12 h-12 bg-gradient-to-r from-purple-600 to-blue-600 rounded-xl flex items-center justify-center text-white mr-4">
-                                            <Mail className="w-6 h-6" />
+                            <Card id="contact">
+                                <CardHeader>
+                                    <div className="flex items-center gap-3">
+                                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted">
+                                            <Mail className="h-5 w-5" />
                                         </div>
-                                        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-                                            Contact Information
-                                        </h2>
+                                        <div className="flex-1">
+                                            <div className="flex items-center gap-2">
+                                                <Badge variant="outline" className="text-xs">11</Badge>
+                                                <CardTitle className="text-xl">Contact Information</CardTitle>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div className="space-y-4">
-                                        <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-                                            If you have any questions about these Terms of Service, please contact us:
-                                        </p>
-                                        <div className="space-y-2">
-                                            <p className="text-gray-600 dark:text-gray-300">
-                                                <strong>Email:</strong> legal@microtravel.com
-                                            </p>
-                                            <p className="text-gray-600 dark:text-gray-300">
-                                                <strong>Address:</strong> 123 Travel Street, New York, NY 10001
-                                            </p>
-                                            <p className="text-gray-600 dark:text-gray-300">
-                                                <strong>Phone:</strong> +1 (555) 123-4567
-                                            </p>
+                                </CardHeader>
+                                <CardContent className="space-y-4">
+                                    <p className="text-muted-foreground leading-relaxed">
+                                        If you have any questions about these Terms of Service, please contact us:
+                                    </p>
+                                    <Separator />
+                                    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
+                                        <div className="space-y-1">
+                                            <p className="font-medium">Email</p>
+                                            <p className="text-sm text-muted-foreground">legal@microtravel.com</p>
+                                        </div>
+                                        <div className="space-y-1">
+                                            <p className="font-medium">Address</p>
+                                            <p className="text-sm text-muted-foreground">123 Travel Street, New York, NY 10001</p>
+                                        </div>
+                                        <div className="space-y-1">
+                                            <p className="font-medium">Phone</p>
+                                            <p className="text-sm text-muted-foreground">+1 (555) 123-4567</p>
                                         </div>
                                     </div>
                                 </CardContent>
@@ -341,7 +428,7 @@ export default function TermsPage() {
                         </div>
                     </div>
                 </div>
-            </div>
+            </main>
         </div>
     );
 }

@@ -12,14 +12,14 @@ const sizeClasses = {
     sm: "w-4 h-4",
     md: "w-6 h-6",
     lg: "w-8 h-8",
-    xl: "w-12 h-12"
+    xl: "w-12 h-12",
 };
 
 export function LoadingSpinner({ size = "md", className }: LoadingSpinnerProps) {
     return (
         <div
             className={cn(
-                "animate-spin rounded-full border-2 border-gray-300 border-t-purple-600 dark:border-gray-600 dark:border-t-purple-400",
+                "animate-spin rounded-full border-2 border-muted border-t-primary transition-colors",
                 sizeClasses[size],
                 className
             )}
@@ -34,9 +34,13 @@ interface LoadingDotsProps {
 export function LoadingDots({ className }: LoadingDotsProps) {
     return (
         <div className={cn("flex space-x-1", className)}>
-            <div className="w-2 h-2 bg-purple-600 dark:bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-            <div className="w-2 h-2 bg-purple-600 dark:bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-            <div className="w-2 h-2 bg-purple-600 dark:bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+            {[0, 150, 300].map((delay, i) => (
+                <div
+                    key={i}
+                    className="w-2 h-2 bg-primary rounded-full animate-bounce transition-colors"
+                    style={{ animationDelay: `${delay}ms` }}
+                />
+            ))}
         </div>
     );
 }
@@ -48,9 +52,13 @@ interface LoadingPulseProps {
 export function LoadingPulse({ className }: LoadingPulseProps) {
     return (
         <div className={cn("flex space-x-2", className)}>
-            <div className="w-3 h-3 bg-purple-600 dark:bg-purple-400 rounded-full animate-pulse"></div>
-            <div className="w-3 h-3 bg-purple-600 dark:bg-purple-400 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
-            <div className="w-3 h-3 bg-purple-600 dark:bg-purple-400 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
+            {[0, 200, 400].map((delay, i) => (
+                <div
+                    key={i}
+                    className="w-3 h-3 bg-primary rounded-full animate-pulse transition-colors"
+                    style={{ animationDelay: `${delay}ms` }}
+                />
+            ))}
         </div>
     );
 }
