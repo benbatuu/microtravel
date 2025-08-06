@@ -1,33 +1,38 @@
 "use client";
 
 import { AuthProvider } from "@/contexts/AuthContext";
-import React, { useState, useEffect } from "react";
+import { ThemeProvider } from "@/contexts/ThemeContext";
+import { I18nProvider } from "@/contexts/I18nContext";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { Toaster } from "@/components/ui/sonner";
+import React from "react";
 import './globals.css'
+import Header from "@/components/Header/Header";
+import Footer from "@/components/Footer/Footer";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const [darkMode, setDarkMode] = useState(false);
-
-  useEffect(() => {
-    const stored = localStorage.getItem("darkMode");
-    if (stored === "true") setDarkMode(true);
-    else setDarkMode(false);
-  }, []);
-
-  // darkMode değiştiğinde localStorage'a yaz ve sınıf ekle/kaldır
-  useEffect(() => {
-    localStorage.setItem("darkMode", darkMode.toString());
-    if (darkMode) document.documentElement.classList.add("dark");
-    else document.documentElement.classList.remove("dark");
-  }, [darkMode]);
-
   return (
-    <html lang="en">
-      <body className="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300 min-h-screen flex flex-col">
-        <AuthProvider>
-          <main className="flex-grow mx-auto w-full max-w-[1600px]">
-            {children}
-          </main>
-        </AuthProvider>
+    <html lang="en" suppressHydrationWarning>
+      <body className="bg-background text-foreground antialiased min-h-screen flex flex-col">
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange={false}
+        >
+          <I18nProvider>
+            <ErrorBoundary>
+              <AuthProvider>
+                <Header />
+                <main className="flex-grow mx-auto w-full">
+                  {children}
+                </main>
+                <Footer />
+              </AuthProvider>
+              <Toaster />
+            </ErrorBoundary>
+          </I18nProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

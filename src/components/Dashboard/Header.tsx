@@ -32,8 +32,14 @@ const routeLabels: Record<string, string> = {
     '/dashboard/my-trips': 'My Trips',
     '/dashboard/favorites': 'Favorites',
     '/dashboard/explore': 'Explore',
+    '/dashboard/analytics': 'Analytics',
     '/dashboard/profile': 'Profile',
     '/dashboard/settings': 'Settings',
+    '/dashboard/subscription': 'Subscription',
+    '/dashboard/billing': 'Billing',
+    '/dashboard/notifications': 'Notifications',
+    '/dashboard/payment-methods': 'Payment Methods',
+    '/dashboard/delete-account': 'Delete Account',
 };
 
 export default function Header({ className }: HeaderProps) {
@@ -180,6 +186,12 @@ export default function Header({ className }: HeaderProps) {
                                 </Link>
                             </DropdownMenuItem>
                             <DropdownMenuItem asChild>
+                                <Link href="/dashboard/subscription" className="cursor-pointer">
+                                    <Crown className="mr-2 h-4 w-4" />
+                                    <span>Subscription</span>
+                                </Link>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem asChild>
                                 <Link href="/dashboard/settings" className="cursor-pointer">
                                     <Settings className="mr-2 h-4 w-4" />
                                     <span>Settings</span>
@@ -189,7 +201,7 @@ export default function Header({ className }: HeaderProps) {
                                 <>
                                     <DropdownMenuSeparator />
                                     <DropdownMenuItem asChild>
-                                        <Link href="/dashboard/settings?tab=subscription" className="cursor-pointer">
+                                        <Link href="/dashboard/subscription" className="cursor-pointer text-blue-600">
                                             <Crown className="mr-2 h-4 w-4" />
                                             <span>Upgrade Plan</span>
                                         </Link>

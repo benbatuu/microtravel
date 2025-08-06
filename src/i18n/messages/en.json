@@ -1,0 +1,474 @@
+{
+    "common": {
+        "loading": "Loading...",
+        "error": "Error",
+        "success": "Success",
+        "cancel": "Cancel",
+        "save": "Save",
+        "delete": "Delete",
+        "edit": "Edit",
+        "close": "Close",
+        "back": "Back",
+        "next": "Next",
+        "previous": "Previous",
+        "search": "Search",
+        "filter": "Filter",
+        "sort": "Sort",
+        "clear": "Clear",
+        "apply": "Apply",
+        "reset": "Reset",
+        "free": "Free"
+    },
+    "navigation": {
+        "home": "Home",
+        "about": "About",
+        "contact": "Contact",
+        "privacy": "Privacy",
+        "terms": "Terms",
+        "help": "Help",
+        "dashboard": "Dashboard",
+        "profile": "Profile",
+        "settings": "Settings",
+        "logout": "Logout",
+        "login": "Login",
+        "signup": "Sign Up",
+        "getStarted": "Get Started",
+        "subscription": "Subscription",
+        "billing": "Billing",
+        "account": "Account"
+    },
+    "header": {
+        "brand": "MicroTravel",
+        "country": "Country",
+        "language": "Language",
+        "theme": {
+            "light": "Light",
+            "dark": "Dark",
+            "system": "System"
+        }
+    },
+    "hero": {
+        "badge": "Next-generation travel experience",
+        "title": "Share Your Micro Travel Experiences",
+        "subtitle": "Discover and document authentic travel moments from around the world",
+        "description": "Join our community of travelers sharing genuine experiences, hidden gems, and local insights that make every journey memorable.",
+        "cta": {
+            "primary": "Start Exploring",
+            "secondary": "Learn More"
+        },
+        "searchPlaceholder": "Search destinations, experiences..."
+    },
+    "features": {
+        "title": "Why Choose MicroTravel?",
+        "subtitle": "Everything you need to share and discover authentic travel experiences",
+        "items": {
+            "authentic": {
+                "title": "Authentic Experiences",
+                "description": "Real stories from real travelers, not sponsored content"
+            },
+            "community": {
+                "title": "Global Community",
+                "description": "Connect with fellow travelers from around the world"
+            },
+            "local": {
+                "title": "Local Insights",
+                "description": "Discover hidden gems and local recommendations"
+            },
+            "easy": {
+                "title": "Easy Sharing",
+                "description": "Simple tools to document and share your experiences"
+            },
+            "secure": {
+                "title": "Secure & Private",
+                "description": "Your data is protected with enterprise-grade security"
+            },
+            "mobile": {
+                "title": "Mobile First",
+                "description": "Perfect experience on any device, anywhere"
+            }
+        }
+    },
+    "pricing": {
+        "title": "Choose Your Perfect Plan",
+        "subtitle": "Flexible pricing options designed for your needs",
+        "monthly": "Monthly",
+        "yearly": "Yearly",
+        "saveBadge": "2 Months Free",
+        "currency": "$",
+        "perMonth": "/month",
+        "perYear": "/year",
+        "trialText": "All plans come with a 14-day free trial. Cancel anytime.",
+        "features": {
+            "securePayment": "Secure payment",
+            "instantActivation": "Instant activation",
+            "support247": "24/7 support",
+            "moneyBack": "Money back guarantee"
+        },
+        "plans": {
+            "free": {
+                "name": "Explorer",
+                "description": "Perfect for getting started",
+                "button": "Start Free",
+                "features": [
+                    "5 travel experience shares",
+                    "50MB photo storage",
+                    "Basic community access",
+                    "Mobile app access",
+                    "Basic travel suggestions"
+                ]
+            },
+            "explorer": {
+                "name": "Adventurer",
+                "description": "For active travelers",
+                "button": "Go Adventurer",
+                "popular": "Most Popular",
+                "features": [
+                    "50 travel experience shares",
+                    "500MB photo storage",
+                    "Premium community access",
+                    "Custom travel routes",
+                    "Advanced filtering",
+                    "Offline map access",
+                    "Priority customer support"
+                ]
+            },
+            "traveler": {
+                "name": "Wanderer",
+                "description": "Professional travel experience",
+                "button": "Become Wanderer",
+                "features": [
+                    "Unlimited travel shares",
+                    "5GB photo storage",
+                    "VIP community access",
+                    "Personal travel consultant",
+                    "Exclusive event invitations",
+                    "Advanced analytics reports",
+                    "API access",
+                    "24/7 premium support",
+                    "Custom badge and profile"
+                ]
+            }
+        }
+    },
+    "testimonials": {
+        "title": "What Our Travelers Say",
+        "subtitle": "Join thousands of satisfied users sharing their experiences",
+        "stopAutoplay": "Stop autoplay",
+        "startAutoplay": "Start autoplay",
+        "items": [
+            {
+                "name": "Sarah Johnson",
+                "role": "Travel Blogger",
+                "content": "MicroTravel has transformed how I document my journeys. The community is amazing and the platform is so intuitive.",
+                "rating": 5
+            },
+            {
+                "name": "Ahmed Hassan",
+                "role": "Digital Nomad",
+                "content": "I love how easy it is to share quick travel moments. The local insights I've discovered have been invaluable.",
+                "rating": 5
+            },
+            {
+                "name": "Maria Garcia",
+                "role": "Adventure Seeker",
+                "content": "The authentic experiences shared here have helped me discover places I never would have found otherwise.",
+                "rating": 5
+            }
+        ]
+    },
+    "statistics": {
+        "items": {
+            "users": {
+                "number": "50K+",
+                "label": "Active Users"
+            },
+            "destinations": {
+                "number": "200+",
+                "label": "Destinations"
+            },
+            "photos": {
+                "number": "1M+",
+                "label": "Shared Photos"
+            },
+            "reviews": {
+                "number": "25K+",
+                "label": "Reviews"
+            }
+        }
+    },
+    "destinations": {
+        "title": "Popular Destinations",
+        "subtitle": "Most preferred travel destinations",
+        "viewDetails": "View Details",
+        "features": {
+            "duration": "days",
+            "budget": "Budget",
+            "groupSize": "Group",
+            "transportation": "Transport",
+            "visa": "Visa",
+            "language": "Language",
+            "currency": "Currency",
+            "people": "people"
+        },
+        "items": [
+            {
+                "name": "Paris",
+                "country": "France",
+                "rating": 4.9,
+                "trips": 2847,
+                "image": "https://images.unsplash.com/photo-1584266337361-679ae80c8519?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                "duration": 7,
+                "budget": {
+                    "amount": 2500,
+                    "currency": "EUR"
+                },
+                "category": "Cultural",
+                "difficultyLevel": "easy",
+                "season": "spring",
+                "groupSize": 4,
+                "transportation": [
+                    "Plane",
+                    "Metro",
+                    "Walking"
+                ],
+                "visaRequirements": "Schengen Visa",
+                "languageInfo": {
+                    "primary": "French"
+                },
+                "currencyInfo": {
+                    "code": "EUR"
+                }
+            },
+            {
+                "name": "Tokyo",
+                "country": "Japan",
+                "rating": 4.8,
+                "trips": 1923,
+                "image": "https://images.unsplash.com/photo-1573985525948-591412799467?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                "duration": 10,
+                "budget": {
+                    "amount": 3500,
+                    "currency": "JPY"
+                },
+                "category": "Urban",
+                "difficultyLevel": "moderate",
+                "season": "autumn",
+                "groupSize": 2,
+                "transportation": [
+                    "Plane",
+                    "Bullet Train",
+                    "Subway"
+                ],
+                "visaRequirements": "Tourist Visa",
+                "languageInfo": {
+                    "primary": "Japanese"
+                },
+                "currencyInfo": {
+                    "code": "JPY"
+                }
+            },
+            {
+                "name": "New York",
+                "country": "USA",
+                "rating": 4.7,
+                "trips": 3251,
+                "image": "https://images.unsplash.com/photo-1580752300928-6e1d4ed200c0?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                "duration": 5,
+                "budget": {
+                    "amount": 3000,
+                    "currency": "USD"
+                },
+                "category": "Urban",
+                "difficultyLevel": "easy",
+                "season": "summer",
+                "groupSize": 3,
+                "transportation": [
+                    "Plane",
+                    "Subway",
+                    "Taxi"
+                ],
+                "visaRequirements": "ESTA",
+                "languageInfo": {
+                    "primary": "English"
+                },
+                "currencyInfo": {
+                    "code": "USD"
+                }
+            }
+        ]
+    },
+    "footer": {
+        "cta": {
+            "title": "Start your free trial today.",
+            "highlight": "Your future won't wait.",
+            "description": "Join thousands of users already leveraging our platform to achieve more.",
+            "button": "Get started with 7 days free"
+        },
+        "newsletter": {
+            "title": "Stay connected",
+            "description": "Subscribe to our newsletter for the latest updates, resources, and exclusive offers.",
+            "placeholder": "Your email address",
+            "button": "Subscribe"
+        },
+        "navigation": {
+            "product": {
+                "title": "Product",
+                "items": [
+                    "Home",
+                    "Feature1",
+                    "Feature2",
+                    "Feature3"
+                ]
+            },
+            "company": {
+                "title": "Company",
+                "items": [
+                    "About",
+                    "Pricing"
+                ]
+            },
+            "support": {
+                "title": "Support",
+                "items": [
+                    "FAQ",
+                    "Contact"
+                ]
+            },
+            "service": {
+                "title": "Service",
+                "items": [
+                    "Terms of service",
+                    "Privacy policy"
+                ]
+            }
+        },
+        "copyright": "© 2025 Streamline -",
+        "socialLinks": {
+            "facebook": "Facebook",
+            "twitter": "Twitter",
+            "linkedin": "LinkedIn",
+            "instagram": "Instagram"
+        }
+    },
+    "auth": {
+        "login": {
+            "title": "Welcome Back",
+            "subtitle": "Sign in to your account",
+            "email": "Email",
+            "password": "Password",
+            "forgotPassword": "Forgot password?",
+            "submit": "Sign In",
+            "noAccount": "Don't have an account?",
+            "signUp": "Sign up"
+        },
+        "signup": {
+            "title": "Create Account",
+            "subtitle": "Join our community of travelers",
+            "name": "Full Name",
+            "email": "Email",
+            "password": "Password",
+            "confirmPassword": "Confirm Password",
+            "submit": "Create Account",
+            "hasAccount": "Already have an account?",
+            "signIn": "Sign in",
+            "terms": "By creating an account, you agree to our {terms} and {privacy}."
+        },
+        "forgotPassword": {
+            "title": "Reset Password",
+            "subtitle": "Enter your email to receive reset instructions",
+            "email": "Email",
+            "submit": "Send Reset Link",
+            "backToLogin": "Back to login"
+        },
+        "passwordReset": {
+            "successTitle": "Check Your Email",
+            "successMessage": "We've sent password reset instructions to {email}",
+            "checkEmail": "Please check your email and follow the instructions to reset your password.",
+            "backToLogin": "Back to Login"
+        },
+        "security": {
+            "title": "Secure Login",
+            "description": "Your connection is encrypted and your data is protected with enterprise-grade security.",
+            "passwordResetTitle": "Secure Reset",
+            "passwordResetDescription": "Password reset links expire in 1 hour for your security.",
+            "resetSecurityTitle": "Security Notice",
+            "resetSecurityDescription": "Reset links are single-use and expire after 1 hour. Check your spam folder if you don't see the email."
+        },
+        "errors": {
+            "allFieldsRequired": "All fields are required",
+            "invalidEmail": "Please enter a valid email address",
+            "emailRequired": "Email is required",
+            "rateLimited": "Too many attempts. Please try again later.",
+            "tooManyAttempts": "Too many login attempts. Please wait before trying again.",
+            "rateLimitWarning": "You have {attempts} attempts remaining before being temporarily locked out.",
+            "passwordResetRateLimited": "Too many password reset attempts. Please try again later.",
+            "passwordResetTooManyAttempts": "Too many password reset attempts. Please wait before trying again.",
+            "passwordResetRateLimitWarning": "You have {attempts} password reset attempts remaining.",
+            "unexpectedError": "An unexpected error occurred. Please try again."
+        }
+    },
+    "dashboard": {
+        "welcome": "Welcome back, {name}!",
+        "overview": {
+            "title": "Overview",
+            "stats": {
+                "experiences": "Experiences",
+                "views": "Views",
+                "likes": "Likes",
+                "followers": "Followers"
+            }
+        },
+        "recentActivity": "Recent Activity",
+        "quickActions": "Quick Actions",
+        "addExperience": "Add Experience",
+        "viewProfile": "View Profile",
+        "manageSettings": "Manage Settings"
+    },
+    "faq": {
+        "title": "Need Help?",
+        "subtitle": "We're here to assist.",
+        "description": "Still have questions? Feel free to contact our friendly",
+        "supportTeam": "support team",
+        "specialists": "specialists.",
+        "viewAllFaqs": "View all FAQs",
+        "items": [
+            {
+                "question": "What is a FAQ and why is it important?",
+                "answer": "A FAQ (Frequently Asked Questions) section is a crucial component of any website or application. It helps users quickly find answers to common questions, reduces support workload, and improves user experience by providing immediate solutions to typical problems."
+            },
+            {
+                "question": "Why should I use a FAQ on my website or app?",
+                "answer": "FAQs improve user experience by providing quick answers, reduce customer support costs, increase customer satisfaction, and help with SEO by targeting common search queries. They also demonstrate transparency and build trust with your audience."
+            },
+            {
+                "question": "How do I effectively create a FAQ section?",
+                "answer": "Start by collecting common questions from customer support, user feedback, and analytics. Organize them into logical categories, write clear and concise answers, and keep the content updated. Use a user-friendly design with easy navigation."
+            },
+            {
+                "question": "What are the benefits of having a well-maintained FAQ section?",
+                "answer": "A well-maintained FAQ section reduces support tickets, improves customer satisfaction, saves time for both users and support staff, provides 24/7 self-service support, and can improve your website's search engine rankings."
+            },
+            {
+                "question": "How often should I update my FAQ section?",
+                "answer": "Review and update your FAQ section regularly, ideally monthly or quarterly. Add new questions based on user feedback, update answers for accuracy, and remove outdated information. Monitor analytics to see which questions are most popular."
+            }
+        ]
+    },
+    "errors": {
+        "404": {
+            "title": "Page Not Found",
+            "description": "The page you're looking for doesn't exist.",
+            "action": "Go Home"
+        },
+        "500": {
+            "title": "Server Error",
+            "description": "Something went wrong on our end.",
+            "action": "Try Again"
+        },
+        "network": {
+            "title": "Connection Error",
+            "description": "Please check your internet connection.",
+            "action": "Retry"
+        }
+    }
+}

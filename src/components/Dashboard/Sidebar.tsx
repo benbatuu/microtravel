@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import {
     Home,
@@ -15,13 +15,26 @@ import {
     LogOut,
     Bell,
     BarChart3,
-    ChevronRightCircle
+    ChevronRightCircle,
+    ChevronLeftCircle,
+    CreditCard,
+    Bookmark,
+    Calendar,
+    Camera,
+    Map,
+    TrendingUp,
+    Zap,
+    Plus,
+    Search,
+    Heart,
+    Globe
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Progress } from '@/components/ui/progress';
+import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 
 interface SidebarProps {
@@ -32,16 +45,18 @@ interface SidebarProps {
 
 export default function ModernSidebar({ isCollapsed = false, onToggle, className }: SidebarProps) {
     const pathname = usePathname();
-    const { profile, subscription } = useAuth();
+    const router = useRouter();
+    const { profile, subscription, signOut } = useAuth();
     const [isMobileOpen, setIsMobileOpen] = useState(false);
     const [hoveredItem, setHoveredItem] = useState<string | null>(null);
 
-    const menu = [
+    const mainMenu = [
         {
             label: 'Overview',
             href: '/dashboard',
             icon: Home,
-            description: 'Dashboard overview'
+            description: 'Dashboard overview',
+            shortcut: '⌘1'
         },
         {
             label: 'My Trips',
@@ -49,33 +64,68 @@ export default function ModernSidebar({ isCollapsed = false, onToggle, className
             icon: Plane,
             description: 'View your trips',
             badge: subscription && subscription.limits.experiences !== -1 ? `${subscription.limits.experiences}` : '∞',
+            shortcut: '⌘2'
         },
         {
             label: 'Favorites',
             href: '/dashboard/favorites',
-            icon: Star,
-            description: 'Saved destinations'
+            icon: Heart,
+            description: 'Saved destinations',
+            shortcut: '⌘3'
         },
         {
             label: 'Explore',
             href: '/dashboard/explore',
             icon: Compass,
-            description: 'Discover new places'
+            description: 'Discover new places',
+            shortcut: '⌘4'
         },
         {
             label: 'Analytics',
             href: '/dashboard/analytics',
             icon: BarChart3,
-            description: 'Travel statistics'
+            description: 'Travel statistics',
+            shortcut: '⌘5'
         }
     ];
 
-    const bottomMenu = [
+    const quickActions = [
+        {
+            label: 'Add Experience',
+            href: '/dashboard/my-trips?action=add',
+            icon: Plus,
+            description: 'Create new experience',
+            shortcut: '⌘N'
+        },
+        {
+            label: 'Search',
+            href: '/dashboard/explore?focus=search',
+            icon: Search,
+            description: 'Search experiences',
+            shortcut: '⌘K'
+        },
+        {
+            label: 'Upload Photos',
+            href: '/dashboard/my-trips?action=upload',
+            icon: Camera,
+            description: 'Upload travel photos',
+            shortcut: '⌘U'
+        }
+    ];
+
+    const accountMenu = [
         {
             label: 'Profile',
             href: '/dashboard/profile',
             icon: User,
             description: 'Manage profile'
+        },
+        {
+            label: 'Subscription',
+            href: '/dashboard/subscription',
+            icon: CreditCard,
+            description: 'Manage subscription',
+            badge: subscription?.name || 'Free'
         },
         {
             label: 'Settings',
@@ -120,6 +170,15 @@ export default function ModernSidebar({ isCollapsed = false, onToggle, className
         ? Math.min((8 / subscription.limits.experiences) * 100, 100)
         : 0;
 
+    const handleSignOut = async () => {
+        try {
+            await signOut();
+            router.push('/');
+        } catch (error) {
+            console.error('Error signing out:', error);
+        }
+    };
+
     const SidebarContent = () => (
         <TooltipProvider>
             <div className="flex flex-col h-full bg-white/50 dark:bg-slate-900/50 backdrop-blur-xl border-r border-slate-200/50 dark:border-slate-700/50">
@@ -130,7 +189,7 @@ export default function ModernSidebar({ isCollapsed = false, onToggle, className
                 )}>
                     <div className="relative">
                         <div className="w-10 h-10 bg-gradient-to-tr from-blue-500 via-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg">
-                            <Plane className="w-5 h-5 text-white" />
+                            <Globe className="w-5 h-5 text-white" />
                         </div>
                         <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-background"></div>
                     </div>
@@ -143,10 +202,21 @@ export default function ModernSidebar({ isCollapsed = false, onToggle, className
                                 <p className="text-xs text-muted-foreground">Explore the world</p>
                             </div>
                             <div className="flex items-center gap-1">
-                                <Button variant="ghost" size="icon" className="h-8 w-8">
-                                    <Bell className="w-4 h-4" />
-                                </Button>
-
+                                <Tooltip delayDuration={0}>
+                                    <TooltipTrigger asChild>
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            className="h-8 w-8"
+                                            onClick={onToggle}
+                                        >
+                                            <ChevronLeftCircle className="w-4 h-4" />
+                                        </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                        <p>Collapse sidebar</p>
+                                    </TooltipContent>
+                                </Tooltip>
                             </div>
                         </>
                     )}
@@ -173,8 +243,16 @@ export default function ModernSidebar({ isCollapsed = false, onToggle, className
 
                 {/* Main Navigation - Scrollable Area */}
                 <div className="flex-1 overflow-y-auto">
+                    {/* Main Menu */}
                     <nav className="px-3 py-4 space-y-1">
-                        {menu.map((item) => {
+                        {!isCollapsed && (
+                            <div className="px-3 py-2">
+                                <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                                    Main
+                                </h3>
+                            </div>
+                        )}
+                        {mainMenu.map((item) => {
                             const Icon = item.icon;
                             const isActive = pathname === item.href;
 
@@ -201,11 +279,18 @@ export default function ModernSidebar({ isCollapsed = false, onToggle, className
                                             {!isCollapsed && (
                                                 <>
                                                     <span className="truncate">{item.label}</span>
-                                                    {item.badge && (
-                                                        <Badge variant="secondary" className="ml-auto text-xs">
-                                                            {item.badge}
-                                                        </Badge>
-                                                    )}
+                                                    <div className="ml-auto flex items-center gap-2">
+                                                        {item.badge && (
+                                                            <Badge variant="secondary" className="text-xs">
+                                                                {item.badge}
+                                                            </Badge>
+                                                        )}
+                                                        {item.shortcut && (
+                                                            <span className="text-xs text-muted-foreground opacity-60">
+                                                                {item.shortcut}
+                                                            </span>
+                                                        )}
+                                                    </div>
                                                 </>
                                             )}
                                             {isActive && (
@@ -217,12 +302,73 @@ export default function ModernSidebar({ isCollapsed = false, onToggle, className
                                         <TooltipContent side="right" className="font-medium">
                                             <p>{item.label}</p>
                                             <p className="text-xs text-muted-foreground">{item.description}</p>
+                                            {item.shortcut && (
+                                                <p className="text-xs text-muted-foreground">{item.shortcut}</p>
+                                            )}
                                         </TooltipContent>
                                     )}
                                 </Tooltip>
                             );
                         })}
                     </nav>
+
+                    {/* Quick Actions */}
+                    <div className="px-3 py-2">
+                        {!isCollapsed && (
+                            <div className="px-3 py-2">
+                                <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                                    Quick Actions
+                                </h3>
+                            </div>
+                        )}
+                        <nav className="space-y-1">
+                            {quickActions.map((item) => {
+                                const Icon = item.icon;
+
+                                return (
+                                    <Tooltip key={item.href} delayDuration={0}>
+                                        <TooltipTrigger asChild>
+                                            <Link
+                                                href={item.href}
+                                                className={cn(
+                                                    "group flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-xl transition-all duration-200",
+                                                    "hover:bg-slate-100 dark:hover:bg-slate-800 text-muted-foreground hover:text-foreground",
+                                                    "focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2",
+                                                    isCollapsed && "justify-center px-3"
+                                                )}
+                                                onMouseEnter={() => setHoveredItem(item.href)}
+                                                onMouseLeave={() => setHoveredItem(null)}
+                                            >
+                                                <Icon className={cn(
+                                                    "w-4 h-4 flex-shrink-0 transition-transform duration-200",
+                                                    hoveredItem === item.href && "scale-110"
+                                                )} />
+                                                {!isCollapsed && (
+                                                    <>
+                                                        <span className="truncate">{item.label}</span>
+                                                        {item.shortcut && (
+                                                            <span className="ml-auto text-xs text-muted-foreground opacity-60">
+                                                                {item.shortcut}
+                                                            </span>
+                                                        )}
+                                                    </>
+                                                )}
+                                            </Link>
+                                        </TooltipTrigger>
+                                        {isCollapsed && (
+                                            <TooltipContent side="right" className="font-medium">
+                                                <p>{item.label}</p>
+                                                <p className="text-xs text-muted-foreground">{item.description}</p>
+                                                {item.shortcut && (
+                                                    <p className="text-xs text-muted-foreground">{item.shortcut}</p>
+                                                )}
+                                            </TooltipContent>
+                                        )}
+                                    </Tooltip>
+                                );
+                            })}
+                        </nav>
+                    </div>
                 </div>
 
                 {/* Bottom Section - Fixed at bottom */}
@@ -297,39 +443,57 @@ export default function ModernSidebar({ isCollapsed = false, onToggle, className
                         </div>
                     )}
 
-                    {/* Bottom Navigation */}
-                    <nav className="px-3 py-2 space-y-1 border-t border-slate-200/50 dark:border-slate-700/50">
-                        {bottomMenu.map((item) => {
-                            const Icon = item.icon;
-                            const isActive = pathname === item.href;
+                    {/* Account Menu */}
+                    <div className="px-3 py-2 border-t border-slate-200/50 dark:border-slate-700/50">
+                        {!isCollapsed && (
+                            <div className="px-3 py-2">
+                                <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                                    Account
+                                </h3>
+                            </div>
+                        )}
+                        <nav className="space-y-1">
+                            {accountMenu.map((item) => {
+                                const Icon = item.icon;
+                                const isActive = pathname === item.href;
 
-                            return (
-                                <Tooltip key={item.href} delayDuration={0}>
-                                    <TooltipTrigger asChild>
-                                        <Link
-                                            href={item.href}
-                                            className={cn(
-                                                "group flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-xl transition-all duration-200",
-                                                "hover:bg-slate-100 dark:hover:bg-slate-800",
-                                                "focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2",
-                                                isActive && "bg-slate-100 dark:bg-slate-800 text-foreground",
-                                                isCollapsed && "justify-center px-3"
-                                            )}
-                                        >
-                                            <Icon className="w-5 h-5 flex-shrink-0" />
-                                            {!isCollapsed && <span className="truncate">{item.label}</span>}
-                                        </Link>
-                                    </TooltipTrigger>
-                                    {isCollapsed && (
-                                        <TooltipContent side="right" className="font-medium">
-                                            <p>{item.label}</p>
-                                            <p className="text-xs text-muted-foreground">{item.description}</p>
-                                        </TooltipContent>
-                                    )}
-                                </Tooltip>
-                            );
-                        })}
-                    </nav>
+                                return (
+                                    <Tooltip key={item.href} delayDuration={0}>
+                                        <TooltipTrigger asChild>
+                                            <Link
+                                                href={item.href}
+                                                className={cn(
+                                                    "group flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-xl transition-all duration-200",
+                                                    "hover:bg-slate-100 dark:hover:bg-slate-800",
+                                                    "focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2",
+                                                    isActive && "bg-slate-100 dark:bg-slate-800 text-foreground",
+                                                    isCollapsed && "justify-center px-3"
+                                                )}
+                                            >
+                                                <Icon className="w-5 h-5 flex-shrink-0" />
+                                                {!isCollapsed && (
+                                                    <>
+                                                        <span className="truncate">{item.label}</span>
+                                                        {item.badge && (
+                                                            <Badge variant="outline" className="ml-auto text-xs">
+                                                                {item.badge}
+                                                            </Badge>
+                                                        )}
+                                                    </>
+                                                )}
+                                            </Link>
+                                        </TooltipTrigger>
+                                        {isCollapsed && (
+                                            <TooltipContent side="right" className="font-medium">
+                                                <p>{item.label}</p>
+                                                <p className="text-xs text-muted-foreground">{item.description}</p>
+                                            </TooltipContent>
+                                        )}
+                                    </Tooltip>
+                                );
+                            })}
+                        </nav>
+                    </div>
 
                     {/* Logout Button */}
                     <div className="px-4 pb-4">
@@ -340,6 +504,7 @@ export default function ModernSidebar({ isCollapsed = false, onToggle, className
                                         variant="ghost"
                                         size="icon"
                                         className="w-full text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20"
+                                        onClick={handleSignOut}
                                     >
                                         <LogOut className="w-4 h-4" />
                                     </Button>
@@ -352,6 +517,7 @@ export default function ModernSidebar({ isCollapsed = false, onToggle, className
                             <Button
                                 variant="ghost"
                                 className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20"
+                                onClick={handleSignOut}
                             >
                                 <LogOut className="w-4 h-4 mr-2" />
                                 Sign Out

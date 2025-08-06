@@ -1,37 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { headers } from 'next/headers'
-import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { stripe } from '@/lib/stripe'
 import { supabaseAdmin } from '@/lib/supabaseClient'
+import { WebhookErrorHandler } from '@/lib/webhook-error-handler'
+import { DatabaseErrorRecovery } from '@/lib/database-error-recovery'
+import { log } from '@/lib/logger'
 
-const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!
 
-export async function POST(request: NextRequest) {
-    try {
-        const body = await request.text()
-        const headersList = await headers()
-        const signature = headersList.get('stripe-signature')
-
-        if (!signature) {
-            console.error('Missing Stripe signature')
-            return NextResponse.json(
-                { error: 'Missing Stripe signature' },
-                { status: 400 }
-            )
-        }
-
-        let event: Stripe.Event
-
-        try {
-            event = stripe.webhooks.constructEvent(body, signature, webhookSecret)
-        } catch (err) {
-            console.error('Webhook signature verification failed:', err)
-            return NextResponse.json(
-                { error: 'Webhook signature verification failed' },
-                { status: 400 }
-            )
-        }
+export const POST = WebhookErrorHandler.withWebhookErrorHandling(
+    async (event: Stripe.Event) => {
+        log.webhook(event.type, event.id)
 
         // Handle the event
         switch (event.type) {
@@ -76,18 +54,28 @@ export async function POST(request: NextRequest) {
                 break
 
             default:
-                console.log(`Unhandled event type: ${event.type}`)
+                log.info(`Unhandled webhook event type: ${event.type}`, {
+                    component: 'Webhook',
+                    action: 'unhandled_event',
+                    eventType: event.type,
+                    eventId: event.id
+                })
         }
 
-        return NextResponse.json({ received: true })
-    } catch (error) {
-        console.error('Webhook error:', error)
-        return NextResponse.json(
-            { error: 'Webhook handler failed' },
-            { status: 500 }
-        )
+        log.webhook(event.type, event.id, true)
+    },
+    {
+        maxRetries: 3,
+        baseDelay: 2000,
+        retryableEvents: [
+            'customer.subscription.created',
+            'customer.subscription.updated',
+            'customer.subscription.deleted',
+            'invoice.payment_succeeded',
+            'invoice.payment_failed'
+        ]
     }
-}
+)
 
 async function findUserByEmail(email: string) {
     const { data: profile } = await supabaseAdmin
@@ -100,48 +88,72 @@ async function findUserByEmail(email: string) {
 }
 
 async function handleSubscriptionCreated(subscription: Stripe.Subscription) {
-    try {
-        const customerId = subscription.customer as string
-        const customer = await stripe.customers.retrieve(customerId) as Stripe.Customer
+    const customerId = subscription.customer as string
 
-        if (!customer.email) {
-            console.error('Customer email not found')
-            return
-        }
+    log.info('Processing subscription created webhook', {
+        component: 'Webhook',
+        action: 'subscription_created',
+        subscriptionId: subscription.id,
+        customerId
+    })
 
-        const profile = await findUserByEmail(customer.email)
-        if (!profile) {
-            console.error('User not found for email:', customer.email)
-            return
-        }
+    const customer = await stripe.customers.retrieve(customerId) as Stripe.Customer
 
-        const tier = getTierFromSubscription(subscription)
-
-        await supabaseAdmin
-            .from('profiles')
-            .update({
-                subscription_tier: tier,
-                subscription_status: subscription.status,
-                stripe_customer_id: customerId,
-                updated_at: new Date().toISOString()
-            })
-            .eq('id', profile.id)
-
-        await supabaseAdmin
-            .from('subscriptions')
-            .insert({
-                user_id: profile.id,
-                stripe_subscription_id: subscription.id,
-                stripe_customer_id: customerId,
-                tier,
-                status: subscription.status,
-                cancel_at_period_end: subscription.cancel_at_period_end || false
-            })
-
-        console.log('Subscription created successfully for user:', profile.id)
-    } catch (error) {
-        console.error('Error handling subscription created:', error)
+    if (!customer.email) {
+        log.error('Customer email not found in subscription created webhook', {
+            component: 'Webhook',
+            action: 'subscription_created',
+            customerId
+        })
+        throw new Error('Customer email not found')
     }
+
+    const profile = await findUserByEmail(customer.email)
+    if (!profile) {
+        log.error('User not found for email in subscription created webhook', {
+            component: 'Webhook',
+            action: 'subscription_created',
+            email: customer.email
+        })
+        throw new Error(`User not found for email: ${customer.email}`)
+    }
+
+    const tier = getTierFromSubscription(subscription)
+
+    // Update profile with retry logic
+    await DatabaseErrorRecovery.updateWithRecovery(
+        supabaseAdmin,
+        'profiles',
+        {
+            subscription_tier: tier,
+            subscription_status: subscription.status,
+            stripe_customer_id: customerId,
+            updated_at: new Date().toISOString()
+        },
+        { id: profile.id }
+    )
+
+    // Insert subscription record with retry logic
+    await DatabaseErrorRecovery.insertWithRecovery(
+        supabaseAdmin,
+        'subscriptions',
+        {
+            user_id: profile.id,
+            stripe_subscription_id: subscription.id,
+            stripe_customer_id: customerId,
+            tier,
+            status: subscription.status,
+            cancel_at_period_end: subscription.cancel_at_period_end || false
+        }
+    )
+
+    log.info('Subscription created successfully', {
+        component: 'Webhook',
+        action: 'subscription_created',
+        userId: profile.id,
+        tier,
+        subscriptionId: subscription.id
+    })
 }
 
 async function handleSubscriptionUpdated(subscription: Stripe.Subscription) {

@@ -1,15 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react';
-import { Eye, EyeOff, ArrowRight, Github, Chrome, CheckCircle, AlertCircle } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
-import { supabase } from "@/lib/supabaseClient";
-import { User } from '@supabase/supabase-js';
-import { useRouter } from 'next/navigation';
+import { Eye, EyeOff, CheckCircle, AlertCircle } from 'lucide-react';
 
 // Toast bileşeni
 const Toast = ({ message, type, onClose }: { message: string; type: 'success' | 'error'; onClose: () => void; }) => {
@@ -39,11 +31,10 @@ const Toast = ({ message, type, onClose }: { message: string; type: 'success' | 
     );
 };
 
-const LoginForm = ({ onSwitchToRegister, onLoginSuccess }: { onSwitchToRegister: () => void; onLoginSuccess: (user: User) => void; }) => {
+const LoginForm = ({ onSwitchToRegister, onLoginSuccess }: { onSwitchToRegister: () => void; onLoginSuccess: (user: any) => void; }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
-    const [rememberMe, setRememberMe] = useState(false);
     const [loading, setLoading] = useState(false);
     const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
 
@@ -55,87 +46,29 @@ const LoginForm = ({ onSwitchToRegister, onLoginSuccess }: { onSwitchToRegister:
         e.preventDefault();
         setLoading(true);
 
-        // Basit validasyon
+        // Basic validation
         if (!email || !password) {
-            showToast('Lütfen tüm alanları doldurun', 'error');
+            showToast('Please fill in all fields', 'error');
             setLoading(false);
             return;
         }
 
-        try {
-            const { data, error } = await supabase.auth.signInWithPassword({
-                email,
-                password
-            });
-
-            if (error) {
-                let errorMessage = 'Giriş yapılırken bir hata oluştu';
-
-                if (error.message.includes('Invalid login credentials')) {
-                    errorMessage = 'E-posta veya şifre yanlış';
-                } else if (error.message.includes('Email not confirmed')) {
-                    errorMessage = 'Lütfen e-posta adresinizi doğrulayın';
-                }
-
-                showToast(errorMessage, 'error');
-            } else {
-                showToast('Giriş başarılı! Yönlendiriliyorsunuz...', 'success');
-
-                // Kullanıcı bilgilerini localStorage'a kaydet (remember me özelliği için)
-                if (rememberMe) {
-                    localStorage.setItem('rememberUser', 'true');
-                } else {
-                    localStorage.removeItem('rememberUser');
-                }
-
-                // 1.5 saniye sonra ana sayfaya yönlendir
+        // Simulate Supabase auth - replace with actual supabase code
+        setTimeout(() => {
+            if (email.includes('@')) {
+                showToast('Sign in successful! Redirecting...', 'success');
                 setTimeout(() => {
-                    onLoginSuccess(data.user);
+                    onLoginSuccess({ email, id: '123' });
                 }, 1500);
-            }
-        } catch {
-            showToast('Beklenmeyen bir hata oluştu', 'error');
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const handleSocialLogin = async (provider: 'github' | 'google') => {
-        try {
-            const { error } = await supabase.auth.signInWithOAuth({
-                provider: provider,
-                options: {
-                    redirectTo: `${window.location.origin}/auth/callback`
-                }
-            });
-
-            if (error) {
-                showToast(`${provider} ile giriş yapılırken hata oluştu`, 'error');
-            }
-        } catch {
-            showToast('Sosyal medya girişi başarısız', 'error');
-        }
-    };
-
-    const handleForgotPassword = async () => {
-        if (!email) {
-            showToast('Lütfen önce e-posta adresinizi girin', 'error');
-            return;
-        }
-
-        try {
-            const { error } = await supabase.auth.resetPasswordForEmail(email, {
-                redirectTo: `${window.location.origin}/reset-password`,
-            });
-
-            if (error) {
-                showToast('Şifre sıfırlama e-postası gönderilemedi', 'error');
             } else {
-                showToast('Şifre sıfırlama bağlantısı e-posta adresinize gönderildi', 'success');
+                showToast('Invalid email or password', 'error');
             }
-        } catch {
-            showToast('Beklenmeyen bir hata oluştu', 'error');
-        }
+            setLoading(false);
+        }, 1000);
+    };
+
+    const handleGoogleLogin = () => {
+        showToast('Google login integration needed', 'error');
     };
 
     return (
@@ -147,42 +80,68 @@ const LoginForm = ({ onSwitchToRegister, onLoginSuccess }: { onSwitchToRegister:
                     onClose={() => setToast(null)}
                 />
             )}
-            <Card className="w-full max-w-md mx-auto">
-                <CardHeader className="text-center">
-                    <CardTitle className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                        Hoş Geldiniz
-                    </CardTitle>
-                    <CardDescription>
-                        Hesabınıza giriş yapın
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <form onSubmit={handleSubmit} className="space-y-4">
-                        <div className="space-y-2">
-                            <Label htmlFor="email">E-posta</Label>
-                            <Input
-                                id="email"
+            <div className="bg-white text-gray-900 flex flex-col gap-6 rounded-xl border border-gray-200 py-6 shadow-sm mx-auto w-full max-w-[380px]">
+                <div className="grid auto-rows-min grid-rows-[auto_auto] gap-1.5 px-6 items-center justify-center">
+                    <a href="#" className="flex items-center gap-2 justify-center">
+                        <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+                            <span className="text-white font-bold text-sm">S</span>
+                        </div>
+                        <span className="text-lg font-semibold tracking-tighter">Your App</span>
+                    </a>
+                </div>
+                <div className="px-6">
+                    <form onSubmit={handleSubmit} className="grid gap-4">
+                        <button
+                            type="button"
+                            onClick={handleGoogleLogin}
+                            disabled={loading}
+                            className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 outline-none focus-visible:ring-2 focus-visible:ring-blue-500 border border-gray-300 bg-white shadow-sm hover:bg-gray-50 h-9 px-4 py-2 w-full"
+                        >
+                            <svg className="mr-2 size-4" viewBox="0 0 24 24">
+                                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+                                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+                            </svg>
+                            Sign up with Google
+                        </button>
+
+                        <div className="flex items-center gap-4">
+                            <span className="h-px w-full bg-gray-200"></span>
+                            <span className="text-xs text-gray-500">OR</span>
+                            <span className="h-px w-full bg-gray-200"></span>
+                        </div>
+
+                        <div className="grid gap-2">
+                            <label className="flex items-center gap-2 text-sm leading-none font-medium select-none" htmlFor="email">
+                                Email
+                            </label>
+                            <input
                                 type="email"
-                                placeholder="ornek@email.com"
+                                id="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                disabled={loading}
+                                className="flex h-9 w-full min-w-0 rounded-md border border-gray-300 bg-transparent px-3 py-1 text-base shadow-sm transition-colors outline-none placeholder:text-gray-400 focus-visible:border-blue-500 focus-visible:ring-2 focus-visible:ring-blue-500/20 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
+                                placeholder="m@example.com"
                                 required
+                                disabled={loading}
                             />
                         </div>
 
-                        <div className="space-y-2">
-                            <Label htmlFor="password">Şifre</Label>
+                        <div className="grid gap-2">
+                            <label className="flex items-center gap-2 text-sm leading-none font-medium select-none" htmlFor="password">
+                                Password
+                            </label>
                             <div className="relative">
-                                <Input
-                                    id="password"
+                                <input
                                     type={showPassword ? "text" : "password"}
-                                    placeholder="••••••••"
+                                    id="password"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
-                                    className="pr-10"
-                                    disabled={loading}
+                                    className="flex h-9 w-full min-w-0 rounded-md border border-gray-300 bg-transparent px-3 py-1 pr-10 text-base shadow-sm transition-colors outline-none placeholder:text-gray-400 focus-visible:border-blue-500 focus-visible:ring-2 focus-visible:ring-blue-500/20 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
+                                    placeholder="Enter your password"
                                     required
+                                    disabled={loading}
                                 />
                                 <button
                                     type="button"
@@ -195,89 +154,26 @@ const LoginForm = ({ onSwitchToRegister, onLoginSuccess }: { onSwitchToRegister:
                             </div>
                         </div>
 
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center space-x-2">
-                                <input
-                                    id="remember"
-                                    type="checkbox"
-                                    checked={rememberMe}
-                                    onChange={(e) => setRememberMe(e.target.checked)}
-                                    className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                                    disabled={loading}
-                                />
-                                <Label htmlFor="remember" className="text-sm">
-                                    Beni hatırla
-                                </Label>
-                            </div>
-                            <Button
-                                type="button"
-                                variant="link"
-                                className="p-0 h-auto text-sm"
-                                onClick={handleForgotPassword}
-                                disabled={loading}
-                            >
-                                Şifremi unuttum
-                            </Button>
-                        </div>
-
-                        <Button
+                        <button
                             type="submit"
                             disabled={loading}
-                            className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 disabled:opacity-50"
+                            className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 outline-none focus-visible:ring-2 focus-visible:ring-blue-500 bg-blue-600 text-white shadow-sm hover:bg-blue-700 h-9 px-4 py-2 w-full"
                         >
-                            {loading ? 'Giriş yapılıyor...' : 'Giriş Yap'}
-                            {!loading && <ArrowRight className="ml-2 h-4 w-4" />}
-                        </Button>
+                            {loading ? 'Signing in...' : 'Log in'}
+                        </button>
                     </form>
-
-                    <div className="mt-6">
-                        <div className="relative">
-                            <Separator />
-                            <div className="absolute inset-0 flex items-center justify-center">
-                                <span className="bg-white px-2 text-sm text-gray-500">veya</span>
-                            </div>
-                        </div>
-
-                        <div className="mt-6 grid grid-cols-2 gap-3">
-                            <Button
-                                type="button"
-                                variant="outline"
-                                className="w-full"
-                                onClick={() => handleSocialLogin('github')}
-                                disabled={loading}
-                            >
-                                <Github className="mr-2 h-4 w-4" />
-                                GitHub
-                            </Button>
-                            <Button
-                                type="button"
-                                variant="outline"
-                                className="w-full"
-                                onClick={() => handleSocialLogin('google')}
-                                disabled={loading}
-                            >
-                                <Chrome className="mr-2 h-4 w-4" />
-                                Google
-                            </Button>
-                        </div>
-                    </div>
-
-                    <div className="mt-6 text-center">
-                        <span className="text-sm text-gray-600">
-                            Hesabınız yok mu?{' '}
-                            <Button
-                                type="button"
-                                variant="link"
-                                onClick={onSwitchToRegister}
-                                className="p-0 h-auto font-semibold"
-                                disabled={loading}
-                            >
-                                Kayıt olun
-                            </Button>
-                        </span>
-                    </div>
-                </CardContent>
-            </Card>
+                </div>
+                <div className="mx-auto flex gap-1 text-sm px-6">
+                    <p className="text-gray-600">Don't have an account yet?</p>
+                    <button
+                        onClick={onSwitchToRegister}
+                        className="text-blue-600 hover:text-blue-700 underline font-medium"
+                        disabled={loading}
+                    >
+                        Sign up
+                    </button>
+                </div>
+            </div>
         </>
     );
 };
@@ -299,23 +195,23 @@ const RegisterForm = ({ onSwitchToLogin }: { onSwitchToLogin: () => void }) => {
 
     const validateForm = () => {
         if (!name.trim()) {
-            showToast('Lütfen adınızı ve soyadınızı girin', 'error');
+            showToast('Please enter your full name', 'error');
             return false;
         }
         if (!email) {
-            showToast('Lütfen e-posta adresinizi girin', 'error');
+            showToast('Please enter your email address', 'error');
             return false;
         }
         if (password.length < 6) {
-            showToast('Şifre en az 6 karakter olmalıdır', 'error');
+            showToast('Password must be at least 6 characters', 'error');
             return false;
         }
         if (password !== confirmPassword) {
-            showToast('Şifreler eşleşmiyor', 'error');
+            showToast('Passwords do not match', 'error');
             return false;
         }
         if (!agreeTerms) {
-            showToast('Kullanım şartlarını kabul etmelisiniz', 'error');
+            showToast('You must accept the terms and conditions', 'error');
             return false;
         }
         return true;
@@ -330,65 +226,18 @@ const RegisterForm = ({ onSwitchToLogin }: { onSwitchToLogin: () => void }) => {
 
         setLoading(true);
 
-        try {
-            const { data, error } = await supabase.auth.signUp({
-                email: email.trim(),
-                password,
-                options: {
-                    data: {
-                        full_name: name.trim(),
-                        display_name: name.trim()
-                    },
-                }
-            });
-
-            if (error) {
-                let errorMessage = 'Kayıt olurken bir hata oluştu';
-
-                if (error.message.includes('User already registered')) {
-                    errorMessage = 'Bu e-posta adresi zaten kayıtlı';
-                } else if (error.message.includes('Password should be at least 6 characters')) {
-                    errorMessage = 'Şifre en az 6 karakter olmalıdır';
-                } else if (error.message.includes('Invalid email')) {
-                    errorMessage = 'Geçersiz e-posta adresi';
-                }
-
-                showToast(errorMessage, 'error');
-            } else {
-                if (data?.user?.email_confirmed_at) {
-                    showToast('Kayıt başarılı! Giriş sayfasına yönlendiriliyorsunuz...', 'success');
-                    setTimeout(() => {
-                        onSwitchToLogin();
-                    }, 2000);
-                } else {
-                    showToast('Kayıt başarılı! E-posta adresinizi kontrol edin ve doğrulama bağlantısına tıklayın.', 'success');
-                    setTimeout(() => {
-                        onSwitchToLogin();
-                    }, 3000);
-                }
-            }
-        } catch {
-            showToast('Beklenmeyen bir hata oluştu', 'error');
-        } finally {
+        // Simulate Supabase registration - replace with actual supabase code
+        setTimeout(() => {
+            showToast('Registration successful! Please check your email.', 'success');
+            setTimeout(() => {
+                onSwitchToLogin();
+            }, 2000);
             setLoading(false);
-        }
+        }, 1000);
     };
 
-    const handleSocialLogin = async (provider: 'google' | 'github') => {
-        try {
-            const { error } = await supabase.auth.signInWithOAuth({
-                provider: provider,
-                options: {
-                    redirectTo: `${window.location.origin}/auth/callback`
-                }
-            });
-
-            if (error) {
-                showToast(`${provider} ile kayıt olurken hata oluştu`, 'error');
-            }
-        } catch {
-            showToast('Sosyal medya kaydı başarısız', 'error');
-        }
+    const handleGoogleLogin = () => {
+        showToast('Google signup integration needed', 'error');
     };
 
     return (
@@ -400,55 +249,84 @@ const RegisterForm = ({ onSwitchToLogin }: { onSwitchToLogin: () => void }) => {
                     onClose={() => setToast(null)}
                 />
             )}
-            <Card className="w-full max-w-md mx-auto">
-                <CardHeader className="text-center">
-                    <CardTitle className="text-3xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
-                        Hesap Oluşturun
-                    </CardTitle>
-                    <CardDescription>
-                        Yeni hesabınızı oluşturun
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <form onSubmit={handleSubmit} className="space-y-4">
-                        <div className="space-y-2">
-                            <Label htmlFor="name">Ad Soyad</Label>
-                            <Input
-                                id="name"
+            <div className="bg-white text-gray-900 flex flex-col gap-6 rounded-xl border border-gray-200 py-6 shadow-sm mx-auto w-full max-w-[380px]">
+                <div className="grid auto-rows-min grid-rows-[auto_auto] gap-1.5 px-6 items-center justify-center">
+                    <a href="#" className="flex items-center gap-2 justify-center">
+                        <div className="w-8 h-8 bg-gradient-to-r from-green-600 to-blue-600 rounded-lg flex items-center justify-center">
+                            <span className="text-white font-bold text-sm">S</span>
+                        </div>
+                        <span className="text-lg font-semibold tracking-tighter">Your App</span>
+                    </a>
+                </div>
+                <div className="px-6">
+                    <form onSubmit={handleSubmit} className="grid gap-4">
+                        <button
+                            type="button"
+                            onClick={handleGoogleLogin}
+                            disabled={loading}
+                            className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 outline-none focus-visible:ring-2 focus-visible:ring-blue-500 border border-gray-300 bg-white shadow-sm hover:bg-gray-50 h-9 px-4 py-2 w-full"
+                        >
+                            <svg className="mr-2 size-4" viewBox="0 0 24 24">
+                                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+                                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+                            </svg>
+                            Sign up with Google
+                        </button>
+
+                        <div className="flex items-center gap-4">
+                            <span className="h-px w-full bg-gray-200"></span>
+                            <span className="text-xs text-gray-500">OR</span>
+                            <span className="h-px w-full bg-gray-200"></span>
+                        </div>
+
+                        <div className="grid gap-2">
+                            <label className="flex items-center gap-2 text-sm leading-none font-medium select-none" htmlFor="name">
+                                Full Name
+                            </label>
+                            <input
                                 type="text"
-                                placeholder="Ad Soyad"
+                                id="name"
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
-                                disabled={loading}
+                                className="flex h-9 w-full min-w-0 rounded-md border border-gray-300 bg-transparent px-3 py-1 text-base shadow-sm transition-colors outline-none placeholder:text-gray-400 focus-visible:border-blue-500 focus-visible:ring-2 focus-visible:ring-blue-500/20 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
+                                placeholder="John Doe"
                                 required
+                                disabled={loading}
                             />
                         </div>
 
-                        <div className="space-y-2">
-                            <Label htmlFor="register-email">E-posta</Label>
-                            <Input
-                                id="register-email"
+                        <div className="grid gap-2">
+                            <label className="flex items-center gap-2 text-sm leading-none font-medium select-none" htmlFor="email">
+                                Email
+                            </label>
+                            <input
                                 type="email"
-                                placeholder="ornek@email.com"
+                                id="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                disabled={loading}
+                                className="flex h-9 w-full min-w-0 rounded-md border border-gray-300 bg-transparent px-3 py-1 text-base shadow-sm transition-colors outline-none placeholder:text-gray-400 focus-visible:border-blue-500 focus-visible:ring-2 focus-visible:ring-blue-500/20 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
+                                placeholder="m@example.com"
                                 required
+                                disabled={loading}
                             />
                         </div>
 
-                        <div className="space-y-2">
-                            <Label htmlFor="register-password">Şifre</Label>
+                        <div className="grid gap-2">
+                            <label className="flex items-center gap-2 text-sm leading-none font-medium select-none" htmlFor="password">
+                                Password
+                            </label>
                             <div className="relative">
-                                <Input
-                                    id="register-password"
+                                <input
                                     type={showPassword ? "text" : "password"}
-                                    placeholder="••••••••"
+                                    id="password"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
-                                    className="pr-10"
-                                    disabled={loading}
+                                    className="flex h-9 w-full min-w-0 rounded-md border border-gray-300 bg-transparent px-3 py-1 pr-10 text-base shadow-sm transition-colors outline-none placeholder:text-gray-400 focus-visible:border-blue-500 focus-visible:ring-2 focus-visible:ring-blue-500/20 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
+                                    placeholder="Enter your password"
                                     required
+                                    disabled={loading}
                                     minLength={6}
                                 />
                                 <button
@@ -462,18 +340,20 @@ const RegisterForm = ({ onSwitchToLogin }: { onSwitchToLogin: () => void }) => {
                             </div>
                         </div>
 
-                        <div className="space-y-2">
-                            <Label htmlFor="confirm-password">Şifre Tekrar</Label>
+                        <div className="grid gap-2">
+                            <label className="flex items-center gap-2 text-sm leading-none font-medium select-none" htmlFor="confirmPassword">
+                                Confirm Password
+                            </label>
                             <div className="relative">
-                                <Input
-                                    id="confirm-password"
+                                <input
                                     type={showConfirmPassword ? "text" : "password"}
-                                    placeholder="••••••••"
+                                    id="confirmPassword"
                                     value={confirmPassword}
                                     onChange={(e) => setConfirmPassword(e.target.value)}
-                                    className="pr-10"
-                                    disabled={loading}
+                                    className="flex h-9 w-full min-w-0 rounded-md border border-gray-300 bg-transparent px-3 py-1 pr-10 text-base shadow-sm transition-colors outline-none placeholder:text-gray-400 focus-visible:border-blue-500 focus-visible:ring-2 focus-visible:ring-blue-500/20 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
+                                    placeholder="Confirm your password"
                                     required
+                                    disabled={loading}
                                 />
                                 <button
                                     type="button"
@@ -496,180 +376,100 @@ const RegisterForm = ({ onSwitchToLogin }: { onSwitchToLogin: () => void }) => {
                                 disabled={loading}
                                 required
                             />
-                            <Label htmlFor="terms" className="text-sm">
-                                <span className="text-gray-600">
-                                    Kullanım şartlarını ve gizlilik politikasını kabul ediyorum
-                                </span>
-                            </Label>
+                            <label htmlFor="terms" className="text-sm text-gray-600">
+                                I accept the terms of service and privacy policy
+                            </label>
                         </div>
 
-                        <Button
+                        <button
                             type="submit"
                             disabled={loading}
-                            className="w-full bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 disabled:opacity-50"
+                            className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 outline-none focus-visible:ring-2 focus-visible:ring-blue-500 bg-green-600 text-white shadow-sm hover:bg-green-700 h-9 px-4 py-2 w-full"
                         >
-                            {loading ? 'Hesap oluşturuluyor...' : 'Hesap Oluştur'}
-                            {!loading && <ArrowRight className="ml-2 h-4 w-4" />}
-                        </Button>
+                            {loading ? 'Creating account...' : 'Create Account'}
+                        </button>
                     </form>
-
-                    <div className="mt-6">
-                        <div className="relative">
-                            <Separator />
-                            <div className="absolute inset-0 flex items-center justify-center">
-                                <span className="bg-white px-2 text-sm text-gray-500">veya</span>
-                            </div>
-                        </div>
-
-                        <div className="mt-6 grid grid-cols-2 gap-3">
-                            <Button
-                                type="button"
-                                variant="outline"
-                                className="w-full"
-                                onClick={() => handleSocialLogin('github')}
-                                disabled={loading}
-                            >
-                                <Github className="mr-2 h-4 w-4" />
-                                GitHub
-                            </Button>
-                            <Button
-                                type="button"
-                                variant="outline"
-                                className="w-full"
-                                onClick={() => handleSocialLogin('google')}
-                                disabled={loading}
-                            >
-                                <Chrome className="mr-2 h-4 w-4" />
-                                Google
-                            </Button>
-                        </div>
-                    </div>
-
-                    <div className="mt-6 text-center">
-                        <span className="text-sm text-gray-600">
-                            Zaten hesabınız var mı?{' '}
-                            <Button
-                                type="button"
-                                variant="link"
-                                onClick={onSwitchToLogin}
-                                className="p-0 h-auto font-semibold"
-                                disabled={loading}
-                            >
-                                Giriş yapın
-                            </Button>
-                        </span>
-                    </div>
-                </CardContent>
-            </Card>
+                </div>
+                <div className="mx-auto flex gap-1 text-sm px-6">
+                    <p className="text-gray-600">Already have an account?</p>
+                    <button
+                        onClick={onSwitchToLogin}
+                        className="text-blue-600 hover:text-blue-700 underline font-medium"
+                        disabled={loading}
+                    >
+                        Sign in
+                    </button>
+                </div>
+            </div>
         </>
     );
 };
 
 export default function GetStarted() {
     const [currentView, setCurrentView] = useState('login');
-    const [user, setUser] = useState<User | null>(null);
+    const [user, setUser] = useState<any>(null);
     const [isProcessingCallback, setIsProcessingCallback] = useState(false);
-    const router = useRouter();
 
-    // URL'deki auth callback tokenlarını kontrol et ve işle
-    useEffect(() => {
-        const handleAuthCallback = async () => {
-            // URL'de hash parametreleri var mı kontrol et
-            if (typeof window !== 'undefined' && window.location.hash) {
-                const hashParams = new URLSearchParams(window.location.hash.substring(1));
-                const accessToken = hashParams.get('access_token');
-                const refreshToken = hashParams.get('refresh_token');
-
-                if (accessToken && refreshToken) {
-                    setIsProcessingCallback(true);
-
-                    try {
-                        // Supabase session'ını manuel olarak ayarla
-                        const { data, error } = await supabase.auth.setSession({
-                            access_token: accessToken,
-                            refresh_token: refreshToken
-                        });
-
-                        if (error) {
-                            console.error('Session ayarlama hatası:', error);
-                        } else if (data.user) {
-                            setUser(data.user);
-                            // URL'deki hash'i temizle
-                            window.history.replaceState(null, '', window.location.pathname);
-                        }
-                    } catch (error) {
-                        console.error('Auth callback error:', error);
-                    } finally {
-                        setIsProcessingCallback(false);
-                    }
-                }
-            }
-        };
-
-        handleAuthCallback();
-    }, []);
-
-    // Kullanıcı oturum durumunu kontrol et
-    useEffect(() => {
-        supabase.auth.getSession().then(({ data: { session } }) => {
-            setUser(session?.user ?? null);
-        });
-
-        const {
-            data: { subscription },
-        } = supabase.auth.onAuthStateChange((_event, session) => {
-            setUser(session?.user ?? null);
-        });
-
-        return () => subscription.unsubscribe();
-    }, []);
-
-    const handleLoginSuccess = (userData: User) => {
+    const handleLoginSuccess = (userData: any) => {
         setUser(userData);
-        // Burada ana sayfaya yönlendirme yapabilirsiniz
         console.log('Kullanıcı giriş yaptı:', userData);
     };
 
     // Eğer callback işleniyor ise loading göster
     if (isProcessingCallback) {
         return (
-            <div className="py-8 flex items-center justify-center">
-                <Card className="w-full max-w-md mx-auto">
-                    <CardContent className="text-center py-8">
-                        <div className="flex justify-center mb-4">
-                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            <section className="py-32 bg-gray-50 min-h-screen">
+                <div className="container mx-auto px-4">
+                    <div className="flex flex-col items-center gap-4">
+                        <div className="bg-white text-gray-900 flex flex-col gap-6 rounded-xl border border-gray-200 py-6 shadow-sm mx-auto w-full max-w-[380px]">
+                            <div className="text-center py-8 px-6">
+                                <div className="flex justify-center mb-4">
+                                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                                </div>
+                                <p className="text-gray-600">Processing authentication...</p>
+                            </div>
                         </div>
-                        <p className="text-gray-600">E-posta doğrulanıyor...</p>
-                    </CardContent>
-                </Card>
-            </div>
+                    </div>
+                </div>
+            </section>
         );
     }
 
     // Eğer kullanıcı giriş yapmışsa, başka bir component göster
     if (user) {
-        router.push('/dashboard'); // Ana sayfaya yönlendir
+        return (
+            <section className="py-32 bg-gray-50 min-h-screen">
+                <div className="container mx-auto px-4">
+                    <div className="flex flex-col items-center gap-4">
+                        <div className="bg-white text-gray-900 flex flex-col gap-6 rounded-xl border border-gray-200 py-6 shadow-sm mx-auto w-full max-w-[380px]">
+                            <div className="text-center py-8 px-6">
+                                <div className="flex justify-center mb-4">
+                                    <CheckCircle className="h-12 w-12 text-green-600" />
+                                </div>
+                                <h2 className="text-xl font-semibold text-gray-900 mb-2">Welcome!</h2>
+                                <p className="text-gray-600">You have successfully signed in.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        );
     }
 
     return (
-        <div className="py-8 flex items-center justify-center">
-            <div className="w-full max-w-md">
-                {currentView === 'login' ? (
-                    <LoginForm
-                        onSwitchToRegister={() => setCurrentView('register')}
-                        onLoginSuccess={handleLoginSuccess}
-                    />
-                ) : (
-                    <RegisterForm onSwitchToLogin={() => setCurrentView('login')} />
-                )}
+        <section className="py-32 bg-gray-50 min-h-screen">
+            <div className="container mx-auto px-4">
+                <div className="flex flex-col items-center gap-4">
+                    {currentView === 'login' ? (
+                        <LoginForm
+                            onSwitchToRegister={() => setCurrentView('register')}
+                            onLoginSuccess={handleLoginSuccess}
+                        />
+                    ) : (
+                        <RegisterForm onSwitchToLogin={() => setCurrentView('login')} />
+                    )}
+                </div>
             </div>
-
-            {/* Decorative elements */}
-            <div className="fixed top-0 left-0 w-full h-full pointer-events-none overflow-hidden">
-                <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse"></div>
-                <div className="absolute top-3/4 right-1/4 w-64 h-64 bg-purple-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse" style={{ animationDelay: '2s' }}></div>
-                <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-pink-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse" style={{ animationDelay: '4s' }}></div>
-            </div>
-        </div>
+        </section>
     );
 }

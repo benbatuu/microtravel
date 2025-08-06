@@ -1,160 +1,80 @@
-"use client";
-
-import { useState } from "react";
-import { PricingCard } from "./PricingCard";
+import React from "react";
+import { ArrowRight, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useI18n } from '@/contexts/I18nContext';
 
-const pricingTiers = [
-    {
-        id: 'free',
-        name: 'Keşifçi',
-        price: 0,
-        interval: 'month' as const,
-        description: 'Mikro seyahate başlamak için ideal',
-        features: [
-            '5 seyahat deneyimi paylaşımı',
-            '50MB fotoğraf depolama',
-            'Temel topluluk erişimi',
-            'Mobil uygulama erişimi',
-            'Temel seyahat önerileri'
-        ],
-        limitations: [
-            'Premium rotalar erişimi yok',
-            'Sınırlı fotoğraf depolama',
-            'Temel destek'
-        ],
-        buttonText: 'Ücretsiz Başla',
-        buttonVariant: 'outline' as const
-    },
-    {
-        id: 'explorer',
-        name: 'Gezgin',
-        price: 49,
-        originalPrice: 59,
-        interval: 'month' as const,
-        description: 'Aktif seyahat severlere özel',
-        features: [
-            '50 seyahat deneyimi paylaşımı',
-            '500MB fotoğraf depolama',
-            'Premium topluluk erişimi',
-            'Özel seyahat rotaları',
-            'Gelişmiş filtreleme',
-            'Offline harita erişimi',
-            'Öncelikli müşteri desteği'
-        ],
-        popular: true,
-        buttonText: 'Gezgin Ol'
-    },
-    {
-        id: 'traveler',
-        name: 'Seyyah',
-        price: 99,
-        originalPrice: 119,
-        interval: 'month' as const,
-        description: 'Profesyonel seyahat deneyimi',
-        features: [
-            'Sınırsız seyahat paylaşımı',
-            '5GB fotoğraf depolama',
-            'VIP topluluk erişimi',
-            'Kişisel seyahat danışmanı',
-            'Özel etkinlik davetiyeleri',
-            'Gelişmiş analitik raporlar',
-            'API erişimi',
-            '7/24 premium destek',
-            'Özel rozet ve profil'
-        ],
-        buttonText: 'Seyyah Ol'
-    },
-    {
-        id: 'enterprise',
-        name: 'Kurumsal',
-        price: 299,
-        interval: 'month' as const,
-        description: 'Şirketler ve büyük gruplar için',
-        features: [
-            'Sınırsız kullanıcı hesabı',
-            'Sınırsız depolama',
-            'Özel marka entegrasyonu',
-            'Gelişmiş yönetim paneli',
-            'Özel API entegrasyonu',
-            'Dedicated hesap yöneticisi',
-            'Özel eğitim ve onboarding',
-            'SLA garantisi',
-            'Özel raporlama'
-        ],
-        buttonText: 'İletişime Geç'
-    }
-];
+const planOrder = ["free", "explorer", "traveler"];
+const planPrices = {
+    free: 0,
+    explorer: 12,
+    traveler: 29,
+    enterprise: 99
+};
 
-interface PricingSectionProps {
-    className?: string;
-}
+export function PricingSection({ className = "" }: { className?: string }) {
+    const { t, messages, isLoading } = useI18n();
+    if (isLoading || !messages?.pricing?.plans) return null;
 
-export function PricingSection({ className = "" }: PricingSectionProps) {
-    const [isAnnual, setIsAnnual] = useState(false);
+    const plans = planOrder.map((key) => {
+        const plan = messages.pricing.plans[key];
+        return {
+            key,
+            name: plan.name,
+            description: plan.description,
+            button: plan.button,
+            features: plan.features,
+            popular: plan.popular,
+            price: planPrices[key as keyof typeof planPrices] ?? 0,
+            priceUnit: messages.pricing.currency || "$",
+            priceNote: t('pricing.perMonth'),
+        };
+    });
 
     return (
-        <section className={`max-w-7xl mx-auto px-4 ${className}`}>
-            <div className="text-center mb-12">
-                <h2 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent mb-4">
-                    Size Uygun Planı Seçin
-                </h2>
-                <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-8">
-                    İhtiyaçlarınıza göre tasarlanmış esnek fiyatlandırma seçenekleri
-                </p>
-
-                {/* Billing Toggle */}
-                <div className="inline-flex items-center bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-full p-1 border border-white/20 dark:border-gray-700/20 shadow-lg">
-                    <Button
-                        variant={!isAnnual ? "default" : "ghost"}
-                        size="sm"
-                        onClick={() => setIsAnnual(false)}
-                        className={`rounded-full px-6 py-2 transition-all ${!isAnnual
-                                ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-md'
-                                : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
-                            }`}
-                    >
-                        Aylık
-                    </Button>
-                    <Button
-                        variant={isAnnual ? "default" : "ghost"}
-                        size="sm"
-                        onClick={() => setIsAnnual(true)}
-                        className={`rounded-full px-6 py-2 transition-all ${isAnnual
-                                ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-md'
-                                : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
-                            }`}
-                    >
-                        Yıllık
-                        <span className="ml-2 text-xs bg-green-500 text-white px-2 py-0.5 rounded-full">
-                            2 Ay Bedava
-                        </span>
-                    </Button>
-                </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {pricingTiers.map((tier, index) => (
-                    <PricingCard
-                        key={tier.id}
-                        tier={tier}
-                        annual={isAnnual}
-                        className="animate-in fade-in-0 slide-in-from-bottom-4"
-                        style={{ animationDelay: `${index * 100}ms` } as React.CSSProperties}
-                    />
-                ))}
-            </div>
-
-            {/* Additional Info */}
-            <div className="mt-12 text-center">
-                <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-                    Tüm planlar 14 gün ücretsiz deneme ile gelir. İstediğiniz zaman iptal edebilirsiniz.
-                </p>
-                <div className="flex flex-wrap justify-center gap-6 text-sm text-gray-500 dark:text-gray-400">
-                    <span>✓ Güvenli ödeme</span>
-                    <span>✓ Anında aktivasyon</span>
-                    <span>✓ 7/24 destek</span>
-                    <span>✓ Para iade garantisi</span>
+        <section className={`w-full max-w-7xl mx-auto pt-32 ${className}`}>
+            <div className="container">
+                <div className="flex flex-col items-center justify-center gap-9.5">
+                    <h1 className="text-center font-serif text-5xl leading-none text-foreground md:text-6xl lg:text-7xl">
+                        {t('pricing.title')}
+                    </h1>
+                    <p className="text-center text-lg text-muted-foreground max-w-2xl mb-8">
+                        {t('pricing.subtitle')}
+                    </p>
+                    <div className="mt-3 grid w-full grid-cols-1 gap-5 lg:grid-cols-3">
+                        {plans.map((plan) => (
+                            <div
+                                key={plan.key}
+                                className={`relative h-full w-full rounded-lg border px-6 py-5 bg-background ${plan.popular ? "border-primary" : "border-muted-2"}`}
+                            >
+                                <div className="text-2xl mb-1">{plan.name}</div>
+                                <div className="text-[2.875rem] leading-[1.05] font-semibold">{plan.priceUnit}{plan.price}</div>
+                                <div className="text-xs text-muted-2-foreground">
+                                    <div>{plan.priceNote}</div>
+                                </div>
+                                <a
+                                    href="#"
+                                    data-slot="button"
+                                    className={`mt-2 inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 h-10 rounded-md px-6 has-[>svg]:px-4 w-full ${plan.popular ? "bg-primary text-primary-foreground hover:bg-primary/90" : ""}`}
+                                >
+                                    {plan.button}
+                                    <ArrowRight className="ml-1" />
+                                </a>
+                                <div className="mt-6 flex flex-col gap-4">
+                                    {Array.isArray(plan.features) && plan.features.map((feature, i) => (
+                                        <div key={i} className="flex items-center gap-3 text-foreground">
+                                            <Check className="size-5 stroke-1 text-green-500" />
+                                            {feature}
+                                        </div>
+                                    ))}
+                                </div>
+                                {plan.popular && (
+                                    <div className="absolute top-0 left-1/2 w-fit -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary px-4 py-1 text-xs font-medium text-primary-foreground">
+                                        {plan.popular}
+                                    </div>
+                                )}
+                            </div>
+                        ))}
+                    </div>
                 </div>
             </div>
         </section>

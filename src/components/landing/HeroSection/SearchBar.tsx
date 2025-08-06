@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Search, Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useTranslation } from "@/contexts/I18nContext";
 
 interface SearchBarProps {
     onSearch?: (query: string) => void;
@@ -11,6 +12,7 @@ interface SearchBarProps {
 }
 
 export function SearchBar({ onSearch, className = "" }: SearchBarProps) {
+    const { t } = useTranslation();
     const [search, setSearch] = useState("");
     const [isSearching, setIsSearching] = useState(false);
     const [showFilters, setShowFilters] = useState(false);
@@ -40,21 +42,21 @@ export function SearchBar({ onSearch, className = "" }: SearchBarProps) {
         <div className={`max-w-2xl mx-auto space-y-4 ${className}`}>
             {/* Main Search Bar */}
             <div className="relative group">
-                <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-blue-600 rounded-2xl blur opacity-25 group-hover:opacity-40 transition-opacity"></div>
-                <div className="relative flex items-center bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-2xl border border-white/20 dark:border-gray-700/20 p-2 shadow-xl">
+                <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-accent/20 rounded-2xl blur opacity-25 group-hover:opacity-40 transition-opacity"></div>
+                <div className="relative flex items-center bg-card/80 backdrop-blur-lg rounded-2xl border border-border/50 p-2 shadow-lg hover-lift">
                     <Input
                         type="text"
-                        placeholder="Nereye gitmek istiyorsun?"
+                        placeholder={t('hero.searchPlaceholder')}
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                         onKeyPress={handleKeyPress}
-                        className="flex-1 border-0 bg-transparent text-base sm:text-lg placeholder:text-gray-500 focus:ring-0 focus:outline-none"
+                        className="flex-1 border-0 bg-transparent text-base sm:text-lg placeholder:text-muted-foreground focus:ring-0 focus:outline-none"
                     />
                     <Button
                         onClick={() => setShowFilters(!showFilters)}
                         variant="ghost"
                         size="sm"
-                        className="mr-2 text-gray-600 hover:text-purple-600 p-2"
+                        className="mr-2 text-muted-foreground hover:text-primary p-2"
                         aria-label="Toggle filters"
                     >
                         <Filter className="w-5 h-5" />
@@ -62,10 +64,10 @@ export function SearchBar({ onSearch, className = "" }: SearchBarProps) {
                     <Button
                         onClick={handleSearch}
                         disabled={isSearching || !search.trim()}
-                        className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white rounded-xl px-4 sm:px-6 py-3 shadow-lg transform transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                        className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl px-4 sm:px-6 py-3 shadow-sm hover-lift disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                     >
                         {isSearching ? (
-                            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                            <div className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
                         ) : (
                             <Search className="w-5 h-5" />
                         )}

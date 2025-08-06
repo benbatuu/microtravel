@@ -1,33 +1,73 @@
+"use client";
+
 import React from "react";
-import { Moon, Sun } from "lucide-react";
+import { Moon, Sun, Monitor } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useTheme } from "next-themes";
 
-interface DarkModeToggleProps {
-    darkMode: boolean;
-    setDarkMode: React.Dispatch<React.SetStateAction<boolean>>;
-}
+const ThemeToggle: React.FC = () => {
+    const { theme, setTheme, systemTheme } = useTheme();
 
-const DarkModeToggle: React.FC<DarkModeToggleProps> = ({ darkMode, setDarkMode }) => {
+    const getThemeIcon = () => {
+        if (theme === "system") {
+            return systemTheme === "dark" ? (
+                <Moon className="w-4 h-4" />
+            ) : (
+                <Sun className="w-4 h-4" />
+            );
+        }
+        return theme === "dark" ? (
+            <Moon className="w-4 h-4" />
+        ) : (
+            <Sun className="w-4 h-4" />
+        );
+    };
+
     return (
-        <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setDarkMode(!darkMode)}
-            className="w-9 h-9 p-0 border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-200"
-            aria-label="Toggle Dark Mode"
-        >
-            <div className="relative w-full h-full flex items-center justify-center">
-                <Sun className={`w-4 h-4 transition-all duration-200 ${darkMode
-                    ? 'rotate-90 scale-0 opacity-0'
-                    : 'rotate-0 scale-100 opacity-100'
-                    }`} />
-                <Moon className={`w-4 h-4 absolute transition-all duration-200 ${darkMode
-                    ? 'rotate-0 scale-100 opacity-100'
-                    : '-rotate-90 scale-0 opacity-0'
-                    }`} />
-            </div>
-        </Button>
+        <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+                <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-9 h-9 p-0 border-border hover:bg-accent hover:text-accent-foreground transition-all duration-200"
+                    aria-label="Toggle theme"
+                >
+                    <div className="relative w-full h-full flex items-center justify-center">
+                        {getThemeIcon()}
+                    </div>
+                </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-40">
+                <DropdownMenuItem
+                    onClick={() => setTheme("light")}
+                    className="cursor-pointer"
+                >
+                    <Sun className="w-4 h-4 mr-2" />
+                    Light
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                    onClick={() => setTheme("dark")}
+                    className="cursor-pointer"
+                >
+                    <Moon className="w-4 h-4 mr-2" />
+                    Dark
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                    onClick={() => setTheme("system")}
+                    className="cursor-pointer"
+                >
+                    <Monitor className="w-4 h-4 mr-2" />
+                    System
+                </DropdownMenuItem>
+            </DropdownMenuContent>
+        </DropdownMenu>
     );
 };
 
-export default DarkModeToggle;
+export default ThemeToggle;

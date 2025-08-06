@@ -11,6 +11,9 @@ export interface UserProfile {
     subscription_end_date: string | null
     storage_used: number
     is_admin: boolean | null
+    admin_role: string | null
+    admin_permissions: string[] | null
+    last_admin_login: string | null
     created_at: string
     updated_at: string
 }

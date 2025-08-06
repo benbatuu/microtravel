@@ -10,7 +10,7 @@ import { Loader2, CheckCircle, AlertCircle } from 'lucide-react';
 export default function AuthCallback() {
     const router = useRouter();
     const [status, setStatus] = useState('loading'); // 'loading', 'success', 'error'
-    const [message, setMessage] = useState('Giriş işlemi gerçekleştiriliyor...');
+    const [message, setMessage] = useState('Processing authentication...');
 
     useEffect(() => {
         const handleAuthCallback = async () => {
@@ -29,43 +29,43 @@ export default function AuthCallback() {
                     });
 
                     if (error) {
-                        console.error('Session ayarlama hatası:', error);
+                        console.error('Session setup error:', error);
                         setStatus('error');
-                        setMessage('Giriş işlemi sırasında bir hata oluştu.');
+                        setMessage('An error occurred during authentication.');
 
-                        // 3 saniye sonra login sayfasına yönlendir
+                        // Redirect to login page after 3 seconds
                         setTimeout(() => {
-                            router.push('/getstarted'); // veya ana sayfa
+                            router.push('/getstarted');
                         }, 3000);
                         return;
                     }
 
                     if (data.user) {
-                        // Kullanıcı bilgilerini localStorage'a kaydet (opsiyonel)
+                        // Save user info to localStorage (optional)
                         localStorage.setItem('user', JSON.stringify(data.user));
 
                         setStatus('success');
 
                         if (type === 'signup') {
-                            setMessage('E-posta doğrulama başarılı! Dashboard\'a yönlendiriliyorsunuz...');
+                            setMessage('Email verification successful! Redirecting to dashboard...');
                         } else if (type === 'recovery') {
-                            setMessage('Şifre sıfırlama başarılı! Dashboard\'a yönlendiriliyorsunuz...');
+                            setMessage('Password reset successful! Redirecting to dashboard...');
                         } else {
-                            setMessage('Giriş başarılı! Dashboard\'a yönlendiriliyorsunuz...');
+                            setMessage('Sign in successful! Redirecting to dashboard...');
                         }
 
-                        // 2 saniye sonra dashboard'a yönlendir
+                        // Redirect to dashboard after 2 seconds
                         setTimeout(() => {
-                            router.push('/dashboard'); // Dashboard sayfanızın yolu
+                            router.push('/dashboard');
                         }, 2000);
                     }
                 } else {
-                    // Token bulunamazsa normal auth flow'u dene
+                    // If no tokens found, try normal auth flow
                     const { data, error } = await supabase.auth.getSession();
 
                     if (error || !data.session) {
                         setStatus('error');
-                        setMessage('Geçersiz doğrulama bağlantısı.');
+                        setMessage('Invalid verification link.');
 
                         setTimeout(() => {
                             router.push('/getstarted');
@@ -75,7 +75,7 @@ export default function AuthCallback() {
 
                     if (data.session.user) {
                         setStatus('success');
-                        setMessage('Giriş başarılı! Dashboard\'a yönlendiriliyorsunuz...');
+                        setMessage('Sign in successful! Redirecting to dashboard...');
 
                         setTimeout(() => {
                             router.push('/dashboard');
@@ -85,7 +85,7 @@ export default function AuthCallback() {
             } catch (error) {
                 console.error('Auth callback error:', error);
                 setStatus('error');
-                setMessage('Beklenmeyen bir hata oluştu.');
+                setMessage('An unexpected error occurred.');
 
                 setTimeout(() => {
                     router.push('/getstarted');
@@ -131,10 +131,10 @@ export default function AuthCallback() {
                         {getIcon()}
                     </div>
                     < CardTitle className="text-2xl font-bold text-gray-900" >
-                        {status === 'loading' && 'İşlem Gerçekleştiriliyor'
+                        {status === 'loading' && 'Processing'
                         }
-                        {status === 'success' && 'Başarılı!'}
-                        {status === 'error' && 'Hata Oluştu'}
+                        {status === 'success' && 'Success!'}
+                        {status === 'error' && 'Error Occurred'}
                     </CardTitle>
                 </CardHeader>
                 < CardContent className="text-center" >

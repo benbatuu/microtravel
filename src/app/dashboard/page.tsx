@@ -9,6 +9,7 @@ import Image from "next/image";
 import ContentArea, { ResponsiveGrid, DashboardCard } from "@/components/Dashboard/ContentArea";
 import SubscriptionStatus from "@/components/Dashboard/SubscriptionStatus";
 import FeatureGate from "@/components/Dashboard/FeatureGate";
+import { StorageUsageIndicator } from "@/components/Dashboard/StorageUsageIndicator";
 import { useAuth } from "@/contexts/AuthContext";
 import TripModal from "@/components/TripModal";
 import {
@@ -287,58 +288,72 @@ const DashboardOverview: React.FC = () => {
                 {/* Subscription Status and Recent Activity */}
                 <ResponsiveGrid cols={{ default: 1, lg: 2 }}>
                     {/* Subscription Status */}
-                    <SubscriptionStatus />
+                    <div className="space-y-4">
+                        <SubscriptionStatus />
+                        {/* Storage Usage Indicator */}
+                        <div className="lg:hidden">
+                            <StorageUsageIndicator />
+                        </div>
+                    </div>
 
-                    {/* Dynamic Recent Activity */}
-                    <DashboardCard
-                        title="Recent Activity"
-                        description="Your latest travel experiences"
-                    >
-                        {activitiesLoading ? (
-                            <ActivitiesSkeleton />
-                        ) : activities.length > 0 ? (
-                            <div className="space-y-4">
-                                {activities.slice(0, 3).map((activity, idx) => (
-                                    <div
-                                        key={`${activity.id}-${idx}`}
-                                        className="flex items-center gap-4 p-3 rounded-lg hover:bg-muted/50 transition-colors"
-                                    >
-                                        <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-                                            <Plane className="w-6 h-6 text-white" />
-                                        </div>
-                                        <div className="flex-1 min-w-0">
-                                            <p className="font-medium truncate">
-                                                {getActivityDescription(activity.event_type, activity.trips?.destination)}
-                                            </p>
-                                            <p className="text-sm text-muted-foreground">
-                                                {formatTimestamp(activity.event_timestamp)}
-                                            </p>
-                                        </div>
-                                        <Button
-                                            variant="ghost"
-                                            size="sm"
-                                            className="min-h-[44px] touch-manipulation"
+                    {/* Storage and Recent Activity */}
+                    <div className="space-y-4">
+                        {/* Storage Usage - Desktop only */}
+                        <div className="hidden lg:block">
+                            <StorageUsageIndicator />
+                        </div>
+
+                        {/* Recent Activity */}
+                        <DashboardCard
+                            title="Recent Activity"
+                            description="Your latest travel experiences"
+                        >
+                            {activitiesLoading ? (
+                                <ActivitiesSkeleton />
+                            ) : activities.length > 0 ? (
+                                <div className="space-y-4">
+                                    {activities.slice(0, 3).map((activity, idx) => (
+                                        <div
+                                            key={`${activity.id}-${idx}`}
+                                            className="flex items-center gap-4 p-3 rounded-lg hover:bg-muted/50 transition-colors"
                                         >
-                                            View
-                                        </Button>
-                                    </div>
-                                ))}
-                            </div>
-                        ) : (
-                            <div className="text-center py-8">
-                                <p className="text-muted-foreground">
-                                    No recent activity. Start by adding your first trip!
-                                </p>
-                                <Button
-                                    onClick={openTripModal}
-                                    className="mt-4"
-                                    variant="outline"
-                                >
-                                    Add Your First Trip
-                                </Button>
-                            </div>
-                        )}
-                    </DashboardCard>
+                                            <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                                                <Plane className="w-6 h-6 text-white" />
+                                            </div>
+                                            <div className="flex-1 min-w-0">
+                                                <p className="font-medium truncate">
+                                                    {getActivityDescription(activity.event_type, activity.trips?.destination)}
+                                                </p>
+                                                <p className="text-sm text-muted-foreground">
+                                                    {formatTimestamp(activity.event_timestamp)}
+                                                </p>
+                                            </div>
+                                            <Button
+                                                variant="ghost"
+                                                size="sm"
+                                                className="min-h-[44px] touch-manipulation"
+                                            >
+                                                View
+                                            </Button>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="text-center py-8">
+                                    <p className="text-muted-foreground">
+                                        No recent activity. Start by adding your first trip!
+                                    </p>
+                                    <Button
+                                        onClick={openTripModal}
+                                        className="mt-4"
+                                        variant="outline"
+                                    >
+                                        Add Your First Trip
+                                    </Button>
+                                </div>
+                            )}
+                        </DashboardCard>
+                    </div>
                 </ResponsiveGrid>
 
                 {/* Premium Features Section */}

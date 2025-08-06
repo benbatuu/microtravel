@@ -1,0 +1,474 @@
+{
+    "common": {
+        "loading": "Yükleniyor...",
+        "error": "Hata",
+        "success": "Başarılı",
+        "cancel": "İptal",
+        "save": "Kaydet",
+        "delete": "Sil",
+        "edit": "Düzenle",
+        "close": "Kapat",
+        "back": "Geri",
+        "next": "İleri",
+        "previous": "Önceki",
+        "search": "Ara",
+        "filter": "Filtrele",
+        "sort": "Sırala",
+        "clear": "Temizle",
+        "apply": "Uygula",
+        "reset": "Sıfırla",
+        "free": "Ücretsiz"
+    },
+    "navigation": {
+        "home": "Ana Sayfa",
+        "about": "Hakkında",
+        "contact": "İletişim",
+        "privacy": "Gizlilik",
+        "terms": "Şartlar",
+        "help": "Yardım",
+        "dashboard": "Panel",
+        "profile": "Profil",
+        "settings": "Ayarlar",
+        "logout": "Çıkış",
+        "login": "Giriş",
+        "signup": "Kayıt Ol",
+        "getStarted": "Başla",
+        "subscription": "Abonelik",
+        "billing": "Faturalama",
+        "account": "Hesap"
+    },
+    "header": {
+        "brand": "MicroTravel",
+        "country": "Ülke",
+        "language": "Dil",
+        "theme": {
+            "light": "Açık",
+            "dark": "Koyu",
+            "system": "Sistem"
+        }
+    },
+    "hero": {
+        "badge": "Yeni nesil seyahat deneyimi",
+        "title": "Mikro Seyahat Deneyimlerinizi Paylaşın",
+        "subtitle": "Dünyanın her yerinden otantik seyahat anlarını keşfedin ve belgeleyin",
+        "description": "Her yolculuğu unutulmaz kılan gerçek deneyimleri, gizli cenneti ve yerel içgörüleri paylaşan seyyahlar topluluğumuza katılın.",
+        "cta": {
+            "primary": "Keşfetmeye Başla",
+            "secondary": "Daha Fazla Bilgi"
+        },
+        "searchPlaceholder": "Destinasyonları, deneyimleri ara..."
+    },
+    "features": {
+        "title": "Neden MicroTravel?",
+        "subtitle": "Otantik seyahat deneyimlerini paylaşmak ve keşfetmek için ihtiyacınız olan her şey",
+        "items": {
+            "authentic": {
+                "title": "Otantik Deneyimler",
+                "description": "Gerçek seyyahlardan gerçek hikayeler, sponsorlu içerik değil"
+            },
+            "community": {
+                "title": "Küresel Topluluk",
+                "description": "Dünyanın her yerinden seyyah arkadaşlarla bağlantı kurun"
+            },
+            "local": {
+                "title": "Yerel İçgörüler",
+                "description": "Gizli cenneti ve yerel tavsiyeleri keşfedin"
+            },
+            "easy": {
+                "title": "Kolay Paylaşım",
+                "description": "Deneyimlerinizi belgelemek ve paylaşmak için basit araçlar"
+            },
+            "secure": {
+                "title": "Güvenli ve Özel",
+                "description": "Verileriniz kurumsal düzeyde güvenlikle korunur"
+            },
+            "mobile": {
+                "title": "Mobil Öncelikli",
+                "description": "Her cihazda, her yerde mükemmel deneyim"
+            }
+        }
+    },
+    "pricing": {
+        "title": "Size Uygun Planı Seçin",
+        "subtitle": "İhtiyaçlarınıza göre tasarlanmış esnek fiyatlandırma seçenekleri",
+        "monthly": "Aylık",
+        "yearly": "Yıllık",
+        "saveBadge": "2 Ay Bedava",
+        "currency": "₺",
+        "perMonth": "/ay",
+        "perYear": "/yıl",
+        "trialText": "Tüm planlar 14 gün ücretsiz deneme ile gelir. İstediğiniz zaman iptal edebilirsiniz.",
+        "features": {
+            "securePayment": "Güvenli ödeme",
+            "instantActivation": "Anında aktivasyon",
+            "support247": "7/24 destek",
+            "moneyBack": "Para iade garantisi"
+        },
+        "plans": {
+            "free": {
+                "name": "Keşifçi",
+                "description": "Mikro seyahate başlamak için ideal",
+                "button": "Ücretsiz Başla",
+                "features": [
+                    "5 seyahat deneyimi paylaşımı",
+                    "50MB fotoğraf depolama",
+                    "Temel topluluk erişimi",
+                    "Mobil uygulama erişimi",
+                    "Temel seyahat önerileri"
+                ]
+            },
+            "explorer": {
+                "name": "Gezgin",
+                "description": "Aktif seyahat severlere özel",
+                "button": "Gezgin Ol",
+                "popular": "En Popüler",
+                "features": [
+                    "50 seyahat deneyimi paylaşımı",
+                    "500MB fotoğraf depolama",
+                    "Premium topluluk erişimi",
+                    "Özel seyahat rotaları",
+                    "Gelişmiş filtreleme",
+                    "Offline harita erişimi",
+                    "Öncelikli müşteri desteği"
+                ]
+            },
+            "traveler": {
+                "name": "Seyyah",
+                "description": "Profesyonel seyahat deneyimi",
+                "button": "Seyyah Ol",
+                "features": [
+                    "Sınırsız seyahat paylaşımı",
+                    "5GB fotoğraf depolama",
+                    "VIP topluluk erişimi",
+                    "Kişisel seyahat danışmanı",
+                    "Özel etkinlik davetiyeleri",
+                    "Gelişmiş analitik raporlar",
+                    "API erişimi",
+                    "7/24 premium destek",
+                    "Özel rozet ve profil"
+                ]
+            }
+        }
+    },
+    "statistics": {
+        "items": {
+            "users": {
+                "number": "50K+",
+                "label": "Aktif Kullanıcı"
+            },
+            "destinations": {
+                "number": "200+",
+                "label": "Gezilebilecek Yer"
+            },
+            "photos": {
+                "number": "1M+",
+                "label": "Paylaşılan Gönderi"
+            },
+            "reviews": {
+                "number": "25K+",
+                "label": "Yorum"
+            }
+        }
+    },
+    "destinations": {
+        "title": "Popüler Destinasyonlar",
+        "subtitle": "En çok tercih edilen seyahat destinasyonları",
+        "viewDetails": "Detayları Görüntüle",
+        "features": {
+            "duration": "gün",
+            "budget": "Bütçe",
+            "groupSize": "Grup",
+            "transportation": "Ulaşım",
+            "visa": "Vize",
+            "language": "Dil",
+            "currency": "Para Birimi",
+            "people": "kişi"
+        },
+        "items": [
+            {
+                "name": "Paris",
+                "country": "Fransa",
+                "rating": 4.9,
+                "trips": 2847,
+                "image": "https://images.unsplash.com/photo-1584266337361-679ae80c8519?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                "duration": 7,
+                "budget": {
+                    "amount": 2500,
+                    "currency": "EUR"
+                },
+                "category": "Kültürel",
+                "difficultyLevel": "easy",
+                "season": "spring",
+                "groupSize": 4,
+                "transportation": [
+                    "Uçak",
+                    "Metro",
+                    "Yürüyüş"
+                ],
+                "visaRequirements": "Schengen Vizesi",
+                "languageInfo": {
+                    "primary": "Fransızca"
+                },
+                "currencyInfo": {
+                    "code": "EUR"
+                }
+            },
+            {
+                "name": "Tokyo",
+                "country": "Japonya",
+                "rating": 4.8,
+                "trips": 1923,
+                "image": "https://images.unsplash.com/photo-1573985525948-591412799467?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                "duration": 10,
+                "budget": {
+                    "amount": 3500,
+                    "currency": "JPY"
+                },
+                "category": "Şehir",
+                "difficultyLevel": "moderate",
+                "season": "autumn",
+                "groupSize": 2,
+                "transportation": [
+                    "Uçak",
+                    "Hızlı Tren",
+                    "Metro"
+                ],
+                "visaRequirements": "Turist Vizesi",
+                "languageInfo": {
+                    "primary": "Japonca"
+                },
+                "currencyInfo": {
+                    "code": "JPY"
+                }
+            },
+            {
+                "name": "New York",
+                "country": "ABD",
+                "rating": 4.7,
+                "trips": 3251,
+                "image": "https://images.unsplash.com/photo-1580752300928-6e1d4ed200c0?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                "duration": 5,
+                "budget": {
+                    "amount": 3000,
+                    "currency": "USD"
+                },
+                "category": "Şehir",
+                "difficultyLevel": "easy",
+                "season": "summer",
+                "groupSize": 3,
+                "transportation": [
+                    "Uçak",
+                    "Metro",
+                    "Taksi"
+                ],
+                "visaRequirements": "ESTA",
+                "languageInfo": {
+                    "primary": "İngilizce"
+                },
+                "currencyInfo": {
+                    "code": "USD"
+                }
+            }
+        ]
+    },
+    "testimonials": {
+        "title": "Seyyahlarımız Ne Diyor",
+        "subtitle": "Deneyimlerini paylaşan binlerce memnun kullanıcıya katılın",
+        "stopAutoplay": "Otomatik oynatmayı durdur",
+        "startAutoplay": "Otomatik oynatmayı başlat",
+        "items": [
+            {
+                "name": "Sarah Johnson",
+                "role": "Seyahat Blogcusu",
+                "content": "MicroTravel yolculuklarımı belgeleme şeklimi dönüştürdü. Topluluk harika ve platform çok sezgisel.",
+                "rating": 5
+            },
+            {
+                "name": "Ahmed Hassan",
+                "role": "Dijital Göçebe",
+                "content": "Hızlı seyahat anlarını paylaşmanın ne kadar kolay olduğunu seviyorum. Keşfettiğim yerel içgörüler paha biçilmezdi.",
+                "rating": 5
+            },
+            {
+                "name": "Maria Garcia",
+                "role": "Macera Arayıcısı",
+                "content": "Burada paylaşılan otantik deneyimler, başka türlü asla bulamayacağım yerleri keşfetmeme yardımcı oldu.",
+                "rating": 5
+            }
+        ]
+    },
+    "footer": {
+        "cta": {
+            "title": "Ücretsiz denemenizi bugün başlatın.",
+            "highlight": "Geleceğiniz beklemeyecek.",
+            "description": "Daha fazlasını başarmak için platformumuzu kullanan binlerce kullanıcıya katılın.",
+            "button": "7 gün ücretsiz başla"
+        },
+        "newsletter": {
+            "title": "Bağlantıda kalın",
+            "description": "En son güncellemeler, kaynaklar ve özel teklifler için bültenimize abone olun.",
+            "placeholder": "E-posta adresiniz",
+            "button": "Abone ol"
+        },
+        "navigation": {
+            "product": {
+                "title": "Ürün",
+                "items": [
+                    "Ana Sayfa",
+                    "Özellik1",
+                    "Özellik2",
+                    "Özellik3"
+                ]
+            },
+            "company": {
+                "title": "Şirket",
+                "items": [
+                    "Hakkımızda",
+                    "Fiyatlandırma"
+                ]
+            },
+            "support": {
+                "title": "Destek",
+                "items": [
+                    "SSS",
+                    "İletişim"
+                ]
+            },
+            "service": {
+                "title": "Servis",
+                "items": [
+                    "Hizmet şartları",
+                    "Gizlilik politikası"
+                ]
+            }
+        },
+        "copyright": "© 2025 Streamline -",
+        "socialLinks": {
+            "facebook": "Facebook",
+            "twitter": "Twitter",
+            "linkedin": "LinkedIn",
+            "instagram": "Instagram"
+        }
+    },
+    "auth": {
+        "login": {
+            "title": "Tekrar Hoş Geldiniz",
+            "subtitle": "Hesabınıza giriş yapın",
+            "email": "E-posta",
+            "password": "Şifre",
+            "forgotPassword": "Şifrenizi mi unuttunuz?",
+            "submit": "Giriş Yap",
+            "noAccount": "Hesabınız yok mu?",
+            "signUp": "Kayıt ol"
+        },
+        "signup": {
+            "title": "Hesap Oluştur",
+            "subtitle": "Seyyahlar topluluğumuza katılın",
+            "name": "Ad Soyad",
+            "email": "E-posta",
+            "password": "Şifre",
+            "confirmPassword": "Şifreyi Onayla",
+            "submit": "Hesap Oluştur",
+            "hasAccount": "Zaten hesabınız var mı?",
+            "signIn": "Giriş yap",
+            "terms": "Hesap oluşturarak {terms} ve {privacy} kabul etmiş olursunuz."
+        },
+        "forgotPassword": {
+            "title": "Şifreyi Sıfırla",
+            "subtitle": "Sıfırlama talimatlarını almak için e-postanızı girin",
+            "email": "E-posta",
+            "submit": "Sıfırlama Bağlantısı Gönder",
+            "backToLogin": "Girişe geri dön"
+        },
+        "passwordReset": {
+            "successTitle": "E-postanızı Kontrol Edin",
+            "successMessage": "{email} adresine şifre sıfırlama talimatları gönderdik",
+            "checkEmail": "Lütfen e-postanızı kontrol edin ve şifrenizi sıfırlamak için talimatları takip edin.",
+            "backToLogin": "Girişe Geri Dön"
+        },
+        "security": {
+            "title": "Güvenli Giriş",
+            "description": "Bağlantınız şifrelenmiştir ve verileriniz kurumsal düzeyde güvenlikle korunmaktadır.",
+            "passwordResetTitle": "Güvenli Sıfırlama",
+            "passwordResetDescription": "Şifre sıfırlama bağlantıları güvenliğiniz için 1 saat içinde sona erer.",
+            "resetSecurityTitle": "Güvenlik Bildirimi",
+            "resetSecurityDescription": "Sıfırlama bağlantıları tek kullanımlıktır ve 1 saat sonra sona erer. E-postayı görmüyorsanız spam klasörünüzü kontrol edin."
+        },
+        "errors": {
+            "allFieldsRequired": "Tüm alanlar gereklidir",
+            "invalidEmail": "Lütfen geçerli bir e-posta adresi girin",
+            "emailRequired": "E-posta gereklidir",
+            "rateLimited": "Çok fazla deneme. Lütfen daha sonra tekrar deneyin.",
+            "tooManyAttempts": "Çok fazla giriş denemesi. Lütfen tekrar denemeden önce bekleyin.",
+            "rateLimitWarning": "Geçici olarak kilitlenmeden önce {attempts} deneme hakkınız kaldı.",
+            "passwordResetRateLimited": "Çok fazla şifre sıfırlama denemesi. Lütfen daha sonra tekrar deneyin.",
+            "passwordResetTooManyAttempts": "Çok fazla şifre sıfırlama denemesi. Lütfen tekrar denemeden önce bekleyin.",
+            "passwordResetRateLimitWarning": "{attempts} şifre sıfırlama deneme hakkınız kaldı.",
+            "unexpectedError": "Beklenmeyen bir hata oluştu. Lütfen tekrar deneyin."
+        }
+    },
+    "dashboard": {
+        "welcome": "Tekrar hoş geldin, {name}!",
+        "overview": {
+            "title": "Genel Bakış",
+            "stats": {
+                "experiences": "Deneyimler",
+                "views": "Görüntüleme",
+                "likes": "Beğeni",
+                "followers": "Takipçi"
+            }
+        },
+        "recentActivity": "Son Aktivite",
+        "quickActions": "Hızlı İşlemler",
+        "addExperience": "Deneyim Ekle",
+        "viewProfile": "Profili Görüntüle",
+        "manageSettings": "Ayarları Yönet"
+    },
+    "faq": {
+        "title": "Yardıma mı ihtiyacınız var?",
+        "subtitle": "Size yardım etmek için buradayız.",
+        "description": "Hala sorularınız mı var? Dostane",
+        "supportTeam": "destek ekibimizle",
+        "specialists": "iletişime geçmekten çekinmeyin.",
+        "viewAllFaqs": "Tüm SSS'leri Görüntüle",
+        "items": [
+            {
+                "question": "SSS nedir ve neden önemlidir?",
+                "answer": "SSS (Sıkça Sorulan Sorular) bölümü, herhangi bir web sitesi veya uygulamanın önemli bir bileşenidir. Kullanıcıların yaygın sorulara hızlıca cevap bulmasına yardımcı olur, destek iş yükünü azaltır ve tipik sorunlara anında çözümler sunarak kullanıcı deneyimini iyileştirir."
+            },
+            {
+                "question": "Web sitemde veya uygulamamda neden SSS kullanmalıyım?",
+                "answer": "SSS'ler hızlı cevaplar sağlayarak kullanıcı deneyimini iyileştirir, müşteri destek maliyetlerini azaltır, müşteri memnuniyetini artırır ve yaygın arama sorgularını hedefleyerek SEO'ya yardımcı olur. Ayrıca şeffaflık gösterir ve kitlenizle güven oluşturur."
+            },
+            {
+                "question": "SSS bölümünü nasıl etkili bir şekilde oluşturabilirim?",
+                "answer": "Müşteri destek, kullanıcı geri bildirimi ve analitiklerden yaygın soruları toplayarak başlayın. Bunları mantıklı kategorilere organize edin, net ve öz cevaplar yazın ve içeriği güncel tutun. Kolay navigasyonlu kullanıcı dostu bir tasarım kullanın."
+            },
+            {
+                "question": "İyi bakımlı bir SSS bölümüne sahip olmanın faydaları nelerdir?",
+                "answer": "İyi bakımlı bir SSS bölümü destek taleplerini azaltır, müşteri memnuniyetini artırır, hem kullanıcılar hem de destek personeli için zaman tasarrufu sağlar, 7/24 self-servis destek sunar ve web sitenizin arama motoru sıralamasını iyileştirebilir."
+            },
+            {
+                "question": "SSS bölümümü ne sıklıkla güncellemeliyim?",
+                "answer": "SSS bölümünüzü düzenli olarak gözden geçirin ve güncelleyin, ideal olarak aylık veya üç aylık. Kullanıcı geri bildirimine dayalı yeni sorular ekleyin, doğruluk için cevapları güncelleyin ve güncel olmayan bilgileri kaldırın. Hangi soruların en popüler olduğunu görmek için analitikleri izleyin."
+            }
+        ]
+    },
+    "errors": {
+        "404": {
+            "title": "Sayfa Bulunamadı",
+            "description": "Aradığınız sayfa mevcut değil.",
+            "action": "Ana Sayfaya Git"
+        },
+        "500": {
+            "title": "Sunucu Hatası",
+            "description": "Bizim tarafımızda bir şeyler ters gitti.",
+            "action": "Tekrar Dene"
+        },
+        "network": {
+            "title": "Bağlantı Hatası",
+            "description": "Lütfen internet bağlantınızı kontrol edin.",
+            "action": "Yeniden Dene"
+        }
+    }
+}

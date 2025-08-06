@@ -1,47 +1,34 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Check } from "lucide-react";
-
-const languages = [
-    { code: "TR", name: "Türkçe", flag: "🇹🇷" },
-    { code: "EN", name: "English", flag: "🇺🇸" },
-    { code: "ES", name: "Español", flag: "🇪🇸" },
-    { code: "FR", name: "Français", flag: "🇫🇷" },
-];
+import { useI18n } from "@/contexts/I18nContext";
+import { locales, localeNames, localeFlags, type Locale } from "@/i18n/config";
 
 const LanguagePicker: React.FC = () => {
-    const [selected, setSelected] = useState("EN");
+    const { locale, setLocale } = useI18n();
 
-    useEffect(() => {
-        const stored = localStorage.getItem("language");
-        if (stored && languages.find(lang => lang.code === stored)) {
-            setSelected(stored);
-        }
-    }, []);
-
-    const handleSelect = (langCode: string) => {
-        setSelected(langCode);
-        localStorage.setItem("language", langCode);
+    const handleLanguageChange = (newLocale: Locale) => {
+        setLocale(newLocale);
     };
 
     return (
         <div className="w-full">
-            {languages.map((language) => (
+            {locales.map((lang) => (
                 <button
-                    key={language.code}
-                    onClick={() => handleSelect(language.code)}
-                    className={`w-full flex items-center justify-between px-3 py-2 text-sm rounded-md transition-colors hover:bg-gray-100 dark:hover:bg-gray-800 ${selected === language.code
-                        ? 'bg-blue-50 dark:bg-blue-950/30 text-blue-600 dark:text-blue-400'
-                        : 'text-gray-700 dark:text-gray-300'
+                    key={lang}
+                    onClick={() => handleLanguageChange(lang)}
+                    className={`w-full flex items-center justify-between px-3 py-2 text-sm rounded-md transition-colors hover:bg-accent hover:text-accent-foreground ${locale === lang
+                            ? 'bg-accent text-accent-foreground'
+                            : 'text-foreground'
                         }`}
                 >
                     <div className="flex items-center space-x-3">
-                        <span className="text-lg">{language.flag}</span>
-                        <span className="font-medium">{language.name}</span>
+                        <span className="text-lg">{localeFlags[lang]}</span>
+                        <span className="font-medium">{localeNames[lang]}</span>
                     </div>
-                    {selected === language.code && (
-                        <Check className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                    {locale === lang && (
+                        <Check className="w-4 h-4 text-primary" />
                     )}
                 </button>
             ))}

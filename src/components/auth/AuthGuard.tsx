@@ -4,14 +4,16 @@ import React from 'react'
 import { useAuth } from '@/hooks/useAuth'
 import { useRouter } from 'next/navigation'
 import { Loader2 } from 'lucide-react'
+import { UnauthorizedPage } from './UnauthorizedPage'
 
 interface AuthGuardProps {
     children: React.ReactNode
     requireAuth?: boolean
-    requireSubscription?: boolean
+    requireSubscription?: boolean | string
     requireAdmin?: boolean
     fallback?: React.ReactNode
     redirectTo?: string
+    loadingFallback?: React.ReactNode
 }
 
 export function AuthGuard({
@@ -20,7 +22,8 @@ export function AuthGuard({
     requireSubscription = false,
     requireAdmin = false,
     fallback,
-    redirectTo
+    redirectTo,
+    loadingFallback
 }: AuthGuardProps) {
     const auth = useAuth()
     const router = useRouter()
@@ -28,11 +31,11 @@ export function AuthGuard({
     // Show loading state while auth is initializing
     if (auth.loading) {
         return (
-            fallback || (
+            loadingFallback || fallback || (
                 <div className="flex items-center justify-center min-h-screen">
                     <div className="text-center">
-                        <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
-                        <p className="text-gray-600">Loading...</p>
+                        <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-blue-600" />
+                        <p className="text-gray-600">Verifying access...</p>
                     </div>
                 </div>
             )
@@ -48,78 +51,58 @@ export function AuthGuard({
 
         return (
             fallback || (
-                <div className="flex items-center justify-center min-h-screen">
-                    <div className="text-center max-w-md mx-auto p-6">
-                        <h2 className="text-2xl font-bold mb-4">Authentication Required</h2>
-                        <p className="text-gray-600 mb-6">
-                            You need to be signed in to access this page.
-                        </p>
-                        <button
-                            onClick={() => router.push('/getstarted')}
-                            className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-                        >
-                            Sign In
-                        </button>
-                    </div>
-                </div>
+                <UnauthorizedPage
+                    reason="authentication_required"
+                    showBackButton={false}
+                />
             )
         )
     }
 
     // Check subscription requirement
-    if (requireSubscription && !auth.hasActiveSubscription) {
-        return (
-            fallback || (
-                <div className="flex items-center justify-center min-h-screen">
-                    <div className="text-center max-w-md mx-auto p-6">
-                        <h2 className="text-2xl font-bold mb-4">Subscription Required</h2>
-                        <p className="text-gray-600 mb-6">
-                            You need an active subscription to access this feature.
-                        </p>
-                        <div className="space-y-3">
-                            <button
-                                onClick={() => router.push('/pricing')}
-                                className="w-full bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-                            >
-                                View Pricing Plans
-                            </button>
-                            <button
-                                onClick={() => router.push('/dashboard')}
-                                className="w-full bg-gray-200 text-gray-800 px-6 py-2 rounded-lg hover:bg-gray-300 transition-colors"
-                            >
-                                Back to Dashboard
-                            </button>
-                        </div>
-                    </div>
-                </div>
+    if (requireSubscription) {
+        const requiredTier = typeof requireSubscription === 'string' ? requireSubscription : 'explorer'
+        const userTier = auth.profile?.subscription_tier || 'free'
+
+        if (!hasRequiredSubscription(userTier, requiredTier)) {
+            return (
+                fallback || (
+                    <UnauthorizedPage
+                        reason="subscription_upgrade_required"
+                        showBackButton={false}
+                    />
+                )
             )
-        )
+        }
     }
 
     // Check admin requirement
     if (requireAdmin && !auth.profile?.is_admin) {
         return (
             fallback || (
-                <div className="flex items-center justify-center min-h-screen">
-                    <div className="text-center max-w-md mx-auto p-6">
-                        <h2 className="text-2xl font-bold mb-4">Access Denied</h2>
-                        <p className="text-gray-600 mb-6">
-                            You don&apos;t have permission to access this page.
-                        </p>
-                        <button
-                            onClick={() => router.push('/dashboard')}
-                            className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-                        >
-                            Back to Dashboard
-                        </button>
-                    </div>
-                </div>
+                <UnauthorizedPage
+                    reason="admin_required"
+                    showBackButton={false}
+                />
             )
         )
     }
 
     // All checks passed, render children
     return <>{children}</>
+}
+
+// Helper function to check subscription tier hierarchy
+function hasRequiredSubscription(userTier: string, requiredTier: string): boolean {
+    const tierHierarchy = ['free', 'explorer', 'traveler', 'enterprise']
+    const userTierIndex = tierHierarchy.indexOf(userTier)
+    const requiredTierIndex = tierHierarchy.indexOf(requiredTier)
+
+    if (userTierIndex === -1 || requiredTierIndex === -1) {
+        return false
+    }
+
+    return userTierIndex >= requiredTierIndex
 }
 
 // Convenience components for specific use cases

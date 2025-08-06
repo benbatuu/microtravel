@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { ArrowRight, Sparkles, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useTranslation } from "@/contexts/I18nContext";
 import Link from "next/link";
 
 interface CTAButtonsProps {
@@ -10,12 +11,17 @@ interface CTAButtonsProps {
 }
 
 export function CTAButtons({ className = "" }: CTAButtonsProps) {
+    const { t } = useTranslation();
     const [isHoveringPrimary, setIsHoveringPrimary] = useState(false);
     const [isHoveringSecondary, setIsHoveringSecondary] = useState(false);
 
     const handleCTAClick = async (ctaName: string) => {
-        const { Analytics } = await import('@/lib/analytics');
-        Analytics.trackCTAClick(ctaName, 'hero_section');
+        try {
+            const { Analytics } = await import('@/lib/analytics');
+            Analytics.trackCTAClick(ctaName, 'hero_section');
+        } catch (error) {
+            console.log('Analytics not available:', error);
+        }
     };
 
     return (
@@ -27,10 +33,10 @@ export function CTAButtons({ className = "" }: CTAButtonsProps) {
                     onMouseEnter={() => setIsHoveringPrimary(true)}
                     onMouseLeave={() => setIsHoveringPrimary(false)}
                     onClick={() => handleCTAClick('start_journey')}
-                    className="w-full sm:w-auto bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white rounded-full px-8 py-4 text-lg font-semibold shadow-xl transform transition-all duration-300 hover:scale-105 hover:shadow-2xl group"
+                    className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl px-8 py-4 text-lg font-semibold shadow-lg hover-lift group"
                 >
                     <Sparkles className="w-5 h-5 mr-2 group-hover:rotate-12 transition-transform" />
-                    Seyahatine Başla
+                    {t('hero.cta.primary')}
                     <ArrowRight
                         className={`w-5 h-5 ml-2 transition-transform duration-300 ${isHoveringPrimary ? 'translate-x-1' : ''
                             }`}
@@ -38,18 +44,18 @@ export function CTAButtons({ className = "" }: CTAButtonsProps) {
                 </Button>
             </Link>
 
-            {/* Secondary CTA - Explore Community */}
-            <Link href="/dashboard/explore" className="w-full sm:w-auto">
+            {/* Secondary CTA - Learn More */}
+            <Link href="/about" className="w-full sm:w-auto">
                 <Button
                     variant="outline"
                     size="lg"
                     onMouseEnter={() => setIsHoveringSecondary(true)}
                     onMouseLeave={() => setIsHoveringSecondary(false)}
-                    onClick={() => handleCTAClick('explore_community')}
-                    className="w-full sm:w-auto bg-white/10 dark:bg-gray-800/10 backdrop-blur-sm border-2 border-white/30 dark:border-gray-700/30 text-gray-900 dark:text-white hover:bg-white/20 dark:hover:bg-gray-800/20 rounded-full px-8 py-4 text-lg font-semibold shadow-lg transform transition-all duration-300 hover:scale-105 hover:shadow-xl group"
+                    onClick={() => handleCTAClick('learn_more')}
+                    className="w-full sm:w-auto bg-card/60 backdrop-blur-sm border-border hover:bg-accent hover:text-accent-foreground rounded-xl px-8 py-4 text-lg font-semibold shadow-sm hover-lift group"
                 >
                     <Users className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
-                    Topluluğu Keşfet
+                    {t('hero.cta.secondary')}
                     <ArrowRight
                         className={`w-5 h-5 ml-2 transition-transform duration-300 ${isHoveringSecondary ? 'translate-x-1' : ''
                             }`}

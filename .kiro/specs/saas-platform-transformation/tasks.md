@@ -1,235 +1,214 @@
-# Implementation Plan
+# Implementation Plan - Revised
 
-- [x] 1. Set up SaaS infrastructure and dependencies
-  - Install and configure Stripe SDK and related dependencies
-  - Add environment variables for Stripe integration
-  - Create database schema extensions for subscription management
-  - Set up Next.js middleware for route protection
-  - _Requirements: 3.1, 3.2, 5.1, 5.2_
+- [x] 1. Fix environment configuration and API connectivity
+  - [x] 1.1 Repair environment variables and API keys
+    - Fix Supabase URL format (add https:// protocol)
+    - Verify and complete truncated Stripe API keys
+    - Add missing SUPABASE_SERVICE_ROLE_KEY for server operations
+    - Test API connectivity and resolve dashboard access issues
+    - _Requirements: 2.1, 3.1, 5.1_
 
-- [x] 2. Implement enhanced authentication system
-  - [x] 2.1 Create authentication context provider and hooks
-    - Build AuthProvider component with subscription-aware state management
-    - Implement useAuth hook with subscription status integration
-    - Create authentication utilities for session management
-    - _Requirements: 2.1, 2.2, 2.4_
+  - [x] 1.2 Create comprehensive Supabase database schema
+    - Design complete database schema with all required tables
+    - Create user profiles, subscriptions, payments, and content tables
+    - Add proper indexes, constraints, and RLS policies
+    - Generate single SQL migration file for fresh database setup
+    - _Requirements: 2.1, 3.1, 7.1, 8.1_
 
-  - [x] 2.2 Build authentication UI components
-    - Create responsive LoginForm component with validation
-    - Build SignupForm component with email verification flow
-    - Implement PasswordReset component with Supabase integration
-    - Design AuthGuard component for route protection
+- [x] 2. Redesign landing page with modern elegant theme
+  - [x] 2.1 Implement comprehensive theme system
+    - Create elegant, classic, modern design system using Shadcn and Tailwind
+    - Implement dark/light mode toggle with system preference detection
+    - Design minimal color palette focusing on elegance over vibrant colors
+    - Create consistent typography scale and spacing system
+    - _Requirements: 1.1, 1.2_
+
+  - [x] 2.2 Build multilanguage support system
+    - Implement i18n infrastructure with language detection
+    - Create language switcher component in header
+    - Add support for Turkish and English languages
+    - Create translation files for all UI text and content
+    - _Requirements: 1.1, 1.2_
+
+  - [x] 2.3 Enhance landing page security and authentication
+    - Implement secure authentication flows with proper validation
+    - Add CSRF protection and rate limiting
+    - Create secure session management with proper token handling
+    - Build secure password reset and email verification flows
+    - _Requirements: 2.1, 2.2, 2.3, 2.4_
+
+  - [x] 2.4 Redesign landing page components with new theme
+    - Rebuild hero section with elegant animations and modern layout
+    - Redesign features section with clean, minimal card designs
+    - Update pricing section with sophisticated comparison tables
+    - Enhance testimonials with professional, trustworthy design
+    - _Requirements: 1.1, 1.2, 1.3, 1.4_
+
+- [x] 3. Comprehensive page-by-page review and fixes
+  - [x] 3.1 Audit and fix all landing pages
+    - Review and update home page with new theme and functionality
+    - Fix about page content and design consistency
+    - Update contact page with working forms and proper validation
+    - Enhance privacy and terms pages with legal compliance
+    - _Requirements: 1.1, 6.1, 6.2_
+
+  - [x] 3.2 Review and enhance authentication pages
+    - Update login page with new theme and improved UX
+    - Enhance signup page with better validation and feedback
+    - Fix password reset flow with proper error handling
+    - Add email verification page with clear instructions
     - _Requirements: 2.1, 2.2, 2.3_
 
-  - [x] 2.3 Implement secure session management
-    - Create SessionManager utility for token refresh and persistence
-    - Build middleware for authentication state verification
-    - Implement automatic logout on session expiration
-    - _Requirements: 2.4, 2.5_
+  - [x] 3.3 Audit and fix dashboard pages
+    - Review dashboard home page and fix API connectivity issues
+    - Update profile page with complete functionality
+    - Fix settings page with proper form handling
+    - Enhance subscription management pages with better UX
+    - _Requirements: 4.1, 4.2, 4.3, 4.4_
 
-- [x] 3. Create subscription management system
-  - [x] 3.1 Set up Stripe integration infrastructure
-    - Configure Stripe client and server-side utilities
-    - Create API routes for Stripe webhook handling
-    - Implement subscription tier configuration and validation
-    - Build payment processing utilities with error handling
-    - _Requirements: 3.1, 3.2, 3.6_
-
-  - [x] 3.2 Build subscription UI components
-    - Create PricingCard component with tier comparison
-    - Implement PaymentForm component using Stripe Elements
-    - Build SubscriptionManager component for plan changes
-    - Design InvoiceHistory component for billing display
-    - _Requirements: 3.1, 3.3, 3.4_
-
-  - [x] 3.3 Implement subscription workflow logic
-    - Create subscription upgrade/downgrade flow with prorated billing
-    - Build subscription cancellation flow with end-of-period access
-    - Implement payment failure handling and retry mechanisms
-    - Create webhook handlers for subscription status updates
-    - _Requirements: 3.3, 3.4, 3.5, 3.6_
-
-- [x] 4. Redesign landing page with responsive layout
-  - [x] 4.1 Create hero section components
-    - Build HeroContent component with animated backgrounds
-    - Implement SearchBar component with filtering capabilities
-    - Create CTAButtons component with subscription integration
-    - Design responsive layout that adapts to all screen sizes
-    - _Requirements: 1.1, 1.2, 1.3_
-
-  - [x] 4.2 Build features and pricing sections
-    - Create FeatureCard and FeatureGrid components
-    - Implement PricingSection with interactive tier comparison
-    - Build TestimonialsSection with carousel functionality
-    - Design responsive grid layouts for different screen sizes
-    - _Requirements: 1.1, 1.2, 1.3_
-
-  - [x] 4.3 Implement social proof and conversion elements
-    - Create TestimonialCard component with user avatars
-    - Build FAQSection with expandable accordion
-    - Implement NewsletterSignup component with validation
-    - Add conversion tracking and analytics integration
-    - _Requirements: 1.1, 1.4_
-
-- [x] 5. Redesign dashboard with subscription-aware features
-  - [x] 5.1 Create responsive dashboard layout
-    - Build collapsible Sidebar component for mobile devices
-    - Implement responsive Header with breadcrumbs and user menu
-    - Create adaptive Content area that adjusts to screen sizes
-    - Design touch-optimized interactions for mobile users
-    - _Requirements: 4.1, 4.2, 4.3_
-
-  - [x] 5.2 Implement subscription-aware UI elements
-    - Create SubscriptionStatus component showing current tier and usage
-    - Build feature gating logic based on subscription level
-    - Implement usage indicators for storage and experience limits
-    - Design UpgradePrompt modals for premium features
-    - _Requirements: 4.4, 5.3_
-
-  - [x] 5.3 Build dashboard content sections
-    - Enhance Overview page with subscription metrics
-    - Update MyTrips section with tier-based limitations
-    - Implement Explore section with premium filtering
-    - Create Settings page with subscription management
-    - _Requirements: 4.1, 4.2, 4.4_
-
-- [ ] 6. Implement secure route protection system
-  - [ ] 6.1 Create Next.js middleware for route protection
-    - Build middleware function to check authentication status
-    - Implement subscription level verification for protected routes
-    - Create redirect logic for unauthorized access attempts
-    - Add route configuration system for different protection levels
-    - _Requirements: 5.1, 5.2, 5.3_
-
-  - [ ] 6.2 Build route protection components
-    - Create RouteGuard component for client-side protection
-    - Implement SubscriptionGuard for premium feature access
-    - Build AdminGuard component for administrative routes
-    - Design unauthorized access pages with upgrade prompts
-    - _Requirements: 5.1, 5.2, 5.3, 5.4_
-
-- [ ] 7. Enhance image storage and management
-  - [ ] 7.1 Implement subscription-based storage limits
-    - Create storage quota tracking and enforcement
-    - Build image upload component with size validation
-    - Implement storage usage indicators in dashboard
-    - Create image optimization and compression utilities
-    - _Requirements: 7.1, 7.2, 7.4_
-
-  - [ ] 7.2 Build image management features
-    - Create image gallery component with responsive design
-    - Implement image deletion with storage cleanup
-    - Build image metadata tracking and organization
-    - Create bulk image operations for premium users
-    - _Requirements: 7.1, 7.2, 7.3_
-
-- [ ] 8. Create complete page coverage
-  - [ ] 8.1 Build missing essential pages
-    - Create About page with company information and mission
-    - Build Contact page with support form and information
-    - Implement Privacy Policy and Terms of Service pages
-    - Create Help/FAQ page with searchable content
-    - _Requirements: 6.1, 6.2_
-
-  - [ ] 8.2 Implement error and status pages
-    - Create custom 404 page with helpful navigation
-    - Build 500 error page with support contact information
-    - Implement maintenance mode page for system updates
-    - Create loading states and skeleton components
-    - _Requirements: 6.1, 6.2_
-
-  - [ ] 8.3 Build subscription management pages
-    - Create billing history page with invoice downloads
-    - Implement payment method management page
-    - Build subscription settings page with plan comparison
-    - Create account deletion page with data export options
-    - _Requirements: 6.3, 6.4_
-
-- [ ] 9. Implement admin dashboard and management
-  - [ ] 9.1 Create admin authentication and routing
-    - Build admin role verification and route protection
-    - Create admin dashboard layout with navigation
-    - Implement admin user management interface
-    - Build admin authentication with enhanced security
-    - _Requirements: 8.1, 8.4_
-
-  - [ ] 9.2 Build subscription management tools
-    - Create user subscription overview and management
-    - Implement billing issue resolution tools
-    - Build subscription analytics and reporting
-    - Create customer support ticket system
+  - [x] 3.4 Review and fix admin pages
+    - Audit admin dashboard for functionality and security
+    - Fix user management pages with proper data loading
+    - Update subscription management tools with working APIs
+    - Enhance monitoring pages with real-time data
     - _Requirements: 8.1, 8.2, 8.3, 8.4_
 
-  - [ ] 9.3 Implement system monitoring and alerts
-    - Create webhook event logging and monitoring
-    - Build payment failure alert system
-    - Implement system health monitoring dashboard
-    - Create automated error reporting and notifications
-    - _Requirements: 8.2, 8.5_
+- [-] 4. Implement comprehensive navigation and menu system
+  - [x] 4.1 Create unified header navigation
+    - Build responsive header with logo, navigation, and user menu
+    - Implement language switcher and theme toggle in header
+    - Add authentication status indicators and login/logout buttons
+    - Create mobile-friendly hamburger menu with smooth animations
+    - _Requirements: 1.1, 2.4, 4.1_
 
-- [ ] 10. Add comprehensive error handling and validation
-  - [ ] 10.1 Implement client-side error handling
-    - Create error boundary components for React error catching
-    - Build user-friendly error message system
-    - Implement form validation with real-time feedback
-    - Create retry mechanisms for failed operations
-    - _Requirements: 2.5, 3.6, 6.2_
+  - [ ] 4.2 Build dashboard navigation system
+    - Create collapsible sidebar with all dashboard sections
+    - Implement breadcrumb navigation for deep pages
+    - Add quick access menu for frequently used features
+    - Build user profile dropdown with account management links
+    - _Requirements: 4.1, 4.2, 4.3_
 
-  - [ ] 10.2 Build server-side error handling
-    - Create API error handling middleware
-    - Implement database error recovery mechanisms
-    - Build Stripe webhook error handling and retry logic
-    - Create comprehensive logging system for debugging
-    - _Requirements: 3.6, 8.5_
+  - [ ] 4.3 Add footer navigation and links
+    - Create comprehensive footer with all important links
+    - Add social media links and contact information
+    - Include legal pages, help resources, and company information
+    - Implement newsletter signup with proper validation
+    - _Requirements: 1.1, 6.1, 6.2_
 
-- [ ] 11. Implement testing suite
-  - [ ] 11.1 Create unit tests for core components
-    - Write tests for authentication components and hooks
-    - Create tests for subscription management utilities
-    - Build tests for payment processing functions
-    - Implement tests for route protection logic
-    - _Requirements: 2.1, 2.2, 3.1, 3.2, 5.1_
+  - [ ] 4.4 Implement contextual navigation
+    - Add "back to" links on deep pages
+    - Create related page suggestions and cross-links
+    - Build search functionality for content discovery
+    - Add help tooltips and guided tours for complex features
+    - _Requirements: 4.1, 6.1, 6.2_
 
-  - [ ] 11.2 Build integration tests
-    - Create tests for API routes and database operations
-    - Implement tests for Stripe webhook processing
-    - Build tests for authentication flows
-    - Create tests for subscription upgrade/downgrade flows
-    - _Requirements: 2.1, 3.3, 3.4, 3.5_
+- [ ] 5. Fix dashboard access and API integration issues
+  - [ ] 5.1 Diagnose and fix API connectivity problems
+    - Debug Supabase client configuration and connection issues
+    - Fix authentication token handling and refresh mechanisms
+    - Resolve API key validation and permission problems
+    - Test all API endpoints and fix broken integrations
+    - _Requirements: 2.4, 4.1, 5.1_
 
-  - [ ] 11.3 Implement end-to-end tests
-    - Create tests for complete user registration and subscription flow
-    - Build tests for payment processing and subscription management
-    - Implement tests for responsive design across devices
-    - Create tests for error handling and recovery scenarios
+  - [ ] 5.2 Implement proper error handling and user feedback
+    - Create user-friendly error messages for API failures
+    - Add loading states and skeleton screens for better UX
+    - Implement retry mechanisms for failed API calls
+    - Build offline detection and graceful degradation
+    - _Requirements: 2.5, 4.1, 6.2_
+
+  - [ ] 5.3 Enhance dashboard data loading and caching
+    - Implement efficient data fetching strategies
+    - Add client-side caching for frequently accessed data
+    - Create optimistic updates for better perceived performance
+    - Build real-time updates for subscription and usage data
+    - _Requirements: 4.1, 4.2, 4.4_
+
+- [ ] 6. Implement modern UI/UX improvements
+  - [ ] 6.1 Apply consistent design system across all pages
+    - Update all components to use new elegant theme
+    - Ensure consistent spacing, typography, and color usage
+    - Add subtle animations and micro-interactions
+    - Implement proper focus states and accessibility features
+    - _Requirements: 1.1, 4.1, 6.1_
+
+  - [ ] 6.2 Enhance responsive design for all devices
+    - Test and fix layout issues on mobile, tablet, and desktop
+    - Optimize touch interactions for mobile devices
+    - Ensure proper text scaling and readability
+    - Fix any overflow or layout breaking issues
+    - _Requirements: 1.1, 4.1, 4.3_
+
+  - [ ] 6.3 Improve form handling and validation
+    - Implement real-time validation with helpful error messages
+    - Add proper form submission states and feedback
+    - Create consistent form styling across all pages
+    - Build accessible form components with proper labeling
+    - _Requirements: 2.1, 2.2, 3.1, 6.3_
+
+- [ ] 7. Enhance security and authentication throughout
+  - [ ] 7.1 Implement comprehensive security measures
+    - Add proper CSRF protection on all forms
+    - Implement rate limiting on authentication endpoints
+    - Create secure session management with proper expiration
+    - Add input sanitization and validation on all user inputs
+    - _Requirements: 2.1, 2.2, 2.4, 5.1_
+
+  - [ ] 7.2 Enhance route protection and authorization
+    - Fix middleware for proper route protection
+    - Implement subscription-based feature gating
+    - Add admin role verification and protection
+    - Create proper unauthorized access handling
+    - _Requirements: 5.1, 5.2, 5.3, 8.1_
+
+  - [ ] 7.3 Improve authentication user experience
+    - Add social login options (Google, GitHub)
+    - Implement "remember me" functionality
+    - Create seamless password strength indicators
+    - Build proper logout confirmation and cleanup
+    - _Requirements: 2.1, 2.2, 2.4_
+
+- [ ] 8. Complete subscription and payment system
+  - [ ] 8.1 Fix and enhance Stripe integration
+    - Debug and fix Stripe webhook handling
+    - Implement proper payment error handling
+    - Create subscription upgrade/downgrade flows
+    - Build invoice and billing history features
+    - _Requirements: 3.1, 3.2, 3.3, 3.4_
+
+  - [ ] 8.2 Implement subscription-aware features
+    - Create feature gating based on subscription tiers
+    - Add usage tracking and limit enforcement
+    - Build upgrade prompts for premium features
+    - Implement subscription status indicators
+    - _Requirements: 3.1, 4.4, 5.3_
+
+- [ ] 9. Add comprehensive testing and quality assurance
+  - [ ] 9.1 Test all pages and functionality
+    - Perform manual testing of all pages and features
+    - Test responsive design on various devices
+    - Verify authentication flows and security measures
+    - Test subscription and payment processing
     - _Requirements: 1.1, 2.1, 3.1, 4.1_
 
-- [ ] 12. Optimize performance and add monitoring
-  - [ ] 12.1 Implement frontend performance optimizations
-    - Add code splitting for route-based lazy loading
-    - Implement image optimization and lazy loading
-    - Create caching strategies for subscription data
-    - Build performance monitoring and analytics
+  - [ ] 9.2 Implement automated testing
+    - Create unit tests for critical components
+    - Build integration tests for API endpoints
+    - Add end-to-end tests for user workflows
+    - Implement visual regression testing
+    - _Requirements: 2.1, 3.1, 4.1, 5.1_
+
+- [ ] 10. Performance optimization and monitoring
+  - [ ] 10.1 Optimize application performance
+    - Implement code splitting and lazy loading
+    - Optimize images and static assets
+    - Add caching strategies for better performance
+    - Minimize bundle size and improve loading times
     - _Requirements: 1.1, 4.1, 7.1_
 
-  - [ ] 12.2 Add backend performance optimizations
-    - Create database indexes for subscription and user queries
-    - Implement caching for frequently accessed data
-    - Build rate limiting for API endpoints
-    - Create webhook processing optimization
-    - _Requirements: 3.2, 5.1, 8.2_
-
-- [ ] 13. Final integration and deployment preparation
-  - [ ] 13.1 Integrate all components and test complete workflows
-    - Connect authentication system with subscription management
-    - Integrate route protection with subscription status
-    - Test complete user journey from signup to subscription
-    - Verify responsive design across all pages and components
-    - _Requirements: 1.1, 2.1, 3.1, 4.1, 5.1_
-
-  - [ ] 13.2 Prepare production deployment configuration
-    - Set up environment variables for production
-    - Configure Stripe webhooks for production environment
-    - Create database migration scripts for production
-    - Set up monitoring and alerting for production deployment
-    - _Requirements: 3.2, 8.2, 8.5_
+  - [ ] 10.2 Add monitoring and analytics
+    - Implement error tracking and reporting
+    - Add performance monitoring and metrics
+    - Create user analytics and behavior tracking
+    - Build subscription and revenue analytics
+    - _Requirements: 8.2, 8.5_

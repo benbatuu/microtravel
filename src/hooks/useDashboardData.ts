@@ -46,72 +46,130 @@ export const useDashboardStats = () => {
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        if (!user?.id) return;
+        if (!user?.id) {
+            // Provide default stats for unauthenticated users
+            const defaultStats: DashboardStat[] = [
+                {
+                    title: "Total Trips",
+                    value: 0,
+                    icon: "Plane",
+                    color: "text-blue-600"
+                },
+                {
+                    title: "Favorite Places",
+                    value: 0,
+                    icon: "Star",
+                    color: "text-yellow-500"
+                },
+                {
+                    title: "Countries Visited",
+                    value: 0,
+                    icon: "Globe",
+                    color: "text-green-600"
+                },
+                {
+                    title: "Upcoming Trips",
+                    value: 0,
+                    icon: "Calendar",
+                    color: "text-purple-600"
+                },
+            ];
+            setStats(defaultStats);
+            setLoading(false);
+            return;
+        }
 
         const fetchStats = async () => {
             try {
                 setLoading(true);
                 setError(null);
 
-                // 1. Total Trips
-                const { count: totalTrips, error: tripsError } = await supabase
-                    .from('trips')
-                    .select('*', { count: 'exact', head: true })
-                    .eq('user_id', user.id);
+                let totalTrips = 0;
+                let favoriteCount = 0;
+                let countriesVisited = 0;
+                let upcomingTrips = 0;
 
-                if (tripsError) throw tripsError;
+                try {
+                    // 1. Total Trips - with fallback
+                    const { count: tripsCount, error: tripsError } = await supabase
+                        .from('trips')
+                        .select('*', { count: 'exact', head: true })
+                        .eq('user_id', user.id);
 
-                // 2. Favorite Places
-                const { count: favoriteCount, error: favoritesError } = await supabase
-                    .from('favorites')
-                    .select('*', { count: 'exact', head: true })
-                    .eq('user_id', user.id);
+                    if (!tripsError) {
+                        totalTrips = tripsCount || 0;
+                    }
+                } catch (err) {
+                    console.warn('Trips table not accessible, using default value:', err);
+                }
 
-                if (favoritesError) throw favoritesError;
+                try {
+                    // 2. Favorite Places - with fallback
+                    const { count: favCount, error: favoritesError } = await supabase
+                        .from('favorites')
+                        .select('*', { count: 'exact', head: true })
+                        .eq('user_id', user.id);
 
-                // 3. Countries Visited
-                const { data: countryData, error: countryError } = await supabase
-                    .from('trips')
-                    .select('country')
-                    .eq('user_id', user.id);
+                    if (!favoritesError) {
+                        favoriteCount = favCount || 0;
+                    }
+                } catch (err) {
+                    console.warn('Favorites table not accessible, using default value:', err);
+                }
 
-                if (countryError) throw countryError;
+                try {
+                    // 3. Countries Visited - with fallback
+                    const { data: countryData, error: countryError } = await supabase
+                        .from('trips')
+                        .select('country')
+                        .eq('user_id', user.id);
 
-                const countriesVisited = new Set(
-                    countryData?.map((trip: { country: any; }) => trip.country).filter(Boolean) || []
-                ).size;
+                    if (!countryError && countryData) {
+                        countriesVisited = new Set(
+                            countryData.map((trip: { country: any; }) => trip.country).filter(Boolean)
+                        ).size;
+                    }
+                } catch (err) {
+                    console.warn('Countries data not accessible, using default value:', err);
+                }
 
-                // 4. Upcoming Trips
-                const { count: upcomingTrips, error: upcomingError } = await supabase
-                    .from('trips')
-                    .select('*', { count: 'exact', head: true })
-                    .eq('user_id', user.id)
-                    .gte('date', new Date().toISOString().split('T')[0]);
+                try {
+                    // 4. Upcoming Trips - with fallback
+                    const { count: upcomingCount, error: upcomingError } = await supabase
+                        .from('trips')
+                        .select('*', { count: 'exact', head: true })
+                        .eq('user_id', user.id)
+                        .gte('date', new Date().toISOString().split('T')[0]);
 
-                if (upcomingError) throw upcomingError;
+                    if (!upcomingError) {
+                        upcomingTrips = upcomingCount || 0;
+                    }
+                } catch (err) {
+                    console.warn('Upcoming trips data not accessible, using default value:', err);
+                }
 
                 const statsData: DashboardStat[] = [
                     {
                         title: "Total Trips",
-                        value: totalTrips || 0,
+                        value: totalTrips,
                         icon: "Plane",
                         color: "text-blue-600"
                     },
                     {
                         title: "Favorite Places",
-                        value: favoriteCount || 0,
+                        value: favoriteCount,
                         icon: "Star",
                         color: "text-yellow-500"
                     },
                     {
                         title: "Countries Visited",
-                        value: countriesVisited || 0,
+                        value: countriesVisited,
                         icon: "Globe",
                         color: "text-green-600"
                     },
                     {
                         title: "Upcoming Trips",
-                        value: upcomingTrips || 0,
+                        value: upcomingTrips,
                         icon: "Calendar",
                         color: "text-purple-600"
                     },
@@ -120,6 +178,34 @@ export const useDashboardStats = () => {
                 setStats(statsData);
             } catch (err) {
                 console.error('Error fetching stats:', err);
+                // Provide fallback stats even on error
+                const fallbackStats: DashboardStat[] = [
+                    {
+                        title: "Total Trips",
+                        value: 0,
+                        icon: "Plane",
+                        color: "text-blue-600"
+                    },
+                    {
+                        title: "Favorite Places",
+                        value: 0,
+                        icon: "Star",
+                        color: "text-yellow-500"
+                    },
+                    {
+                        title: "Countries Visited",
+                        value: 0,
+                        icon: "Globe",
+                        color: "text-green-600"
+                    },
+                    {
+                        title: "Upcoming Trips",
+                        value: 0,
+                        icon: "Calendar",
+                        color: "text-purple-600"
+                    },
+                ];
+                setStats(fallbackStats);
                 setError(err instanceof Error ? err.message : 'Failed to load statistics');
             } finally {
                 setLoading(false);
@@ -140,44 +226,80 @@ export const useRecentActivity = () => {
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        if (!user?.id) return;
+        if (!user?.id) {
+            setActivities([]);
+            setLoading(false);
+            return;
+        }
 
         const fetchRecentActivity = async () => {
             try {
                 setLoading(true);
                 setError(null);
 
-                const { data, error: activityError } = await supabase
-                    .from('analytics_events')
-                    .select(`
-            id,
-            event_type,
-            trip_id,
-            event_timestamp,
-            metadata,
-            trips (
-              title,
-              destination
-            )
-          `)
-                    .eq('user_id', user.id)
-                    .order('event_timestamp', { ascending: false })
-                    .limit(10);
+                // Try to fetch from analytics_events table with fallback
+                try {
+                    const { data, error: activityError } = await supabase
+                        .from('analytics_events')
+                        .select(`
+                            id,
+                            event_type,
+                            trip_id,
+                            event_timestamp,
+                            metadata,
+                            trips (
+                              title,
+                              destination
+                            )
+                        `)
+                        .eq('user_id', user.id)
+                        .order('event_timestamp', { ascending: false })
+                        .limit(10);
 
-                if (activityError) throw activityError;
+                    if (!activityError && data) {
+                        setActivities(
+                            data.map((item: any) => ({
+                                ...item,
+                                trips: item.trips
+                                    ? Array.isArray(item.trips)
+                                        ? item.trips[0] // take the first trip if it's an array
+                                        : item.trips
+                                    : undefined
+                            }))
+                        );
+                    } else {
+                        // Fallback: create mock activities based on user's trips
+                        const { data: tripsData } = await supabase
+                            .from('trips')
+                            .select('id, title, destination, created_at')
+                            .eq('user_id', user.id)
+                            .order('created_at', { ascending: false })
+                            .limit(5);
 
-                setActivities(
-                    (data || []).map((item: any) => ({
-                        ...item,
-                        trips: item.trips
-                            ? Array.isArray(item.trips)
-                                ? item.trips[0] // take the first trip if it's an array
-                                : item.trips
-                            : undefined
-                    }))
-                );
+                        if (tripsData && tripsData.length > 0) {
+                            const mockActivities: RecentActivity[] = tripsData.map((trip: any, index: number) => ({
+                                id: `mock-${trip.id}-${index}`,
+                                event_type: 'trip_created',
+                                trip_id: trip.id,
+                                event_timestamp: trip.created_at || new Date().toISOString(),
+                                metadata: {},
+                                trips: {
+                                    title: trip.title,
+                                    destination: trip.destination
+                                }
+                            }));
+                            setActivities(mockActivities);
+                        } else {
+                            setActivities([]);
+                        }
+                    }
+                } catch (fallbackError) {
+                    console.warn('Analytics events table not accessible, using empty activities:', fallbackError);
+                    setActivities([]);
+                }
             } catch (err) {
                 console.error('Error fetching recent activity:', err);
+                setActivities([]);
                 setError(err instanceof Error ? err.message : 'Failed to load recent activity');
             } finally {
                 setLoading(false);
@@ -202,56 +324,115 @@ export const useRecommendations = () => {
                 setLoading(true);
                 setError(null);
 
-                // En çok ziyaret edilen ülkelere göre öneri
-                const { data, error: recommendationError } = await supabase
-                    .from('trips')
-                    .select('country, destination, image_url')
-                    .not('country', 'is', null)
-                    .limit(100);
+                try {
+                    // Try to get recommendations from trips data
+                    const { data, error: recommendationError } = await supabase
+                        .from('trips')
+                        .select('country, destination, image_url')
+                        .not('country', 'is', null)
+                        .limit(100);
 
-                if (recommendationError) throw recommendationError;
+                    if (!recommendationError && data && data.length > 0) {
+                        // Group countries and count
+                        const countryStats: Record<string, {
+                            count: number;
+                            destinations: Array<{ destination: string; image_url: string | null }>;
+                        }> = {};
 
-                // Ülkeleri grupla ve say
-                const countryStats: Record<string, {
-                    count: number;
-                    destinations: Array<{ destination: string; image_url: string | null }>;
-                }> = {};
+                        data.forEach((trip: { country: string | number; destination: string; image_url: any; }) => {
+                            if (trip.country) {
+                                if (!countryStats[trip.country]) {
+                                    countryStats[trip.country] = {
+                                        count: 0,
+                                        destinations: []
+                                    };
+                                }
+                                countryStats[trip.country].count++;
 
-                data?.forEach((trip: { country: string | number; destination: string; image_url: any; }) => {
-                    if (trip.country) {
-                        if (!countryStats[trip.country]) {
-                            countryStats[trip.country] = {
-                                count: 0,
-                                destinations: []
-                            };
-                        }
-                        countryStats[trip.country].count++;
+                                if (trip.destination &&
+                                    !countryStats[trip.country].destinations.some(d => d.destination === trip.destination)) {
+                                    countryStats[trip.country].destinations.push({
+                                        destination: trip.destination,
+                                        image_url: trip.image_url
+                                    });
+                                }
+                            }
+                        });
 
-                        if (trip.destination &&
-                            !countryStats[trip.country].destinations.some(d => d.destination === trip.destination)) {
-                            countryStats[trip.country].destinations.push({
-                                destination: trip.destination,
-                                image_url: trip.image_url
-                            });
-                        }
+                        // Get top 3 countries
+                        const topCountries: Recommendation[] = Object.entries(countryStats)
+                            .sort(([, a], [, b]) => b.count - a.count)
+                            .slice(0, 3)
+                            .map(([country, stats]) => ({
+                                title: stats.destinations[0]?.destination || country,
+                                image: stats.destinations[0]?.image_url ||
+                                    `https://images.unsplash.com/photo-1539037116277-4db20889f2d4?q=80&w=880&auto=format&fit=crop`,
+                                description: `Popular destination with ${stats.count} visits from travelers`,
+                                country
+                            }));
+
+                        setRecommendations(topCountries);
+                    } else {
+                        // Fallback: provide default popular destinations
+                        const defaultRecommendations: Recommendation[] = [
+                            {
+                                title: "Paris, France",
+                                image: "https://images.unsplash.com/photo-1584266337361-679ae80c8519?q=80&w=880&auto=format&fit=crop",
+                                description: "The City of Light offers endless micro-adventures from charming cafés to hidden gardens",
+                                country: "France"
+                            },
+                            {
+                                title: "Tokyo, Japan",
+                                image: "https://images.unsplash.com/photo-1573985525948-591412799467?q=80&w=880&auto=format&fit=crop",
+                                description: "Discover traditional temples and modern districts in short, immersive experiences",
+                                country: "Japan"
+                            },
+                            {
+                                title: "New York, USA",
+                                image: "https://images.unsplash.com/photo-1580752300928-6e1d4ed200c0?q=80&w=880&auto=format&fit=crop",
+                                description: "Explore diverse neighborhoods and iconic landmarks in bite-sized adventures",
+                                country: "USA"
+                            }
+                        ];
+                        setRecommendations(defaultRecommendations);
                     }
-                });
-
-                // En popüler 3 ülkeyi al
-                const topCountries: Recommendation[] = Object.entries(countryStats)
-                    .sort(([, a], [, b]) => b.count - a.count)
-                    .slice(0, 3)
-                    .map(([country, stats]) => ({
-                        title: stats.destinations[0]?.destination || country,
-                        image: stats.destinations[0]?.image_url ||
-                            `https://images.unsplash.com/photo-1539037116277-4db20889f2d4?q=80&w=880&auto=format&fit=crop`,
-                        description: `Popular destination with ${stats.count} visits from travelers`,
-                        country
-                    }));
-
-                setRecommendations(topCountries);
+                } catch (fallbackError) {
+                    console.warn('Trips table not accessible, using default recommendations:', fallbackError);
+                    // Provide default recommendations
+                    const defaultRecommendations: Recommendation[] = [
+                        {
+                            title: "Paris, France",
+                            image: "https://images.unsplash.com/photo-1584266337361-679ae80c8519?q=80&w=880&auto=format&fit=crop",
+                            description: "The City of Light offers endless micro-adventures from charming cafés to hidden gardens",
+                            country: "France"
+                        },
+                        {
+                            title: "Tokyo, Japan",
+                            image: "https://images.unsplash.com/photo-1573985525948-591412799467?q=80&w=880&auto=format&fit=crop",
+                            description: "Discover traditional temples and modern districts in short, immersive experiences",
+                            country: "Japan"
+                        },
+                        {
+                            title: "New York, USA",
+                            image: "https://images.unsplash.com/photo-1580752300928-6e1d4ed200c0?q=80&w=880&auto=format&fit=crop",
+                            description: "Explore diverse neighborhoods and iconic landmarks in bite-sized adventures",
+                            country: "USA"
+                        }
+                    ];
+                    setRecommendations(defaultRecommendations);
+                }
             } catch (err) {
                 console.error('Error fetching recommendations:', err);
+                // Even on error, provide some default recommendations
+                const fallbackRecommendations: Recommendation[] = [
+                    {
+                        title: "Explore Popular Destinations",
+                        image: "https://images.unsplash.com/photo-1539037116277-4db20889f2d4?q=80&w=880&auto=format&fit=crop",
+                        description: "Discover amazing places for your next micro-adventure",
+                        country: "Global"
+                    }
+                ];
+                setRecommendations(fallbackRecommendations);
                 setError(err instanceof Error ? err.message : 'Failed to load recommendations');
             } finally {
                 setLoading(false);

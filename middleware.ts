@@ -10,40 +10,75 @@ interface RouteConfig {
     subscriptionRequired?: string
     adminOnly?: boolean
     redirectTo?: string
+    description?: string
 }
 
-// Route configuration
+// Define subscription tier hierarchy for access control
+const SUBSCRIPTION_TIERS = ['free', 'explorer', 'traveler', 'enterprise'] as const
+type SubscriptionTier = typeof SUBSCRIPTION_TIERS[number]
+
+// Define protection levels for better organization
+enum ProtectionLevel {
+    PUBLIC = 'public',
+    AUTH_REQUIRED = 'auth_required',
+    SUBSCRIPTION_REQUIRED = 'subscription_required',
+    ADMIN_ONLY = 'admin_only'
+}
+
+// Route configuration with enhanced organization
 const routeConfigs: RouteConfig[] = [
-    // Public routes
-    { path: '/', authRequired: false },
-    { path: '/getstarted', authRequired: false },
-    { path: '/about', authRequired: false },
-    { path: '/contact', authRequired: false },
-    { path: '/privacy', authRequired: false },
-    { path: '/terms', authRequired: false },
-    { path: '/pricing', authRequired: false },
+    // Public routes - no authentication required
+    { path: '/', authRequired: false, description: 'Landing page' },
+    { path: '/getstarted', authRequired: false, description: 'Get started page' },
+    { path: '/about', authRequired: false, description: 'About page' },
+    { path: '/contact', authRequired: false, description: 'Contact page' },
+    { path: '/privacy', authRequired: false, description: 'Privacy policy' },
+    { path: '/terms', authRequired: false, description: 'Terms of service' },
+    { path: '/pricing', authRequired: false, description: 'Pricing page' },
+    { path: '/help', authRequired: false, description: 'Help page' },
+    { path: '/faq', authRequired: false, description: 'FAQ page' },
 
-    // Auth routes
-    { path: '/auth', authRequired: false },
+    // Authentication routes - guest only
+    { path: '/auth', authRequired: false, description: 'Authentication pages' },
+    { path: '/auth/login', authRequired: false, description: 'Login page' },
+    { path: '/auth/signup', authRequired: false, description: 'Signup page' },
+    { path: '/auth/reset', authRequired: false, description: 'Password reset' },
+    { path: '/auth/callback', authRequired: false, description: 'Auth callback' },
 
-    // Protected dashboard routes
-    { path: '/dashboard', authRequired: true, redirectTo: '/auth' },
-    { path: '/dashboard/profile', authRequired: true, redirectTo: '/auth' },
-    { path: '/dashboard/settings', authRequired: true, redirectTo: '/auth' },
-    { path: '/dashboard/my-trips', authRequired: true, redirectTo: '/auth' },
-    { path: '/dashboard/explore', authRequired: true, redirectTo: '/auth' },
-    { path: '/dashboard/favorites', authRequired: true, redirectTo: '/auth' },
+    // Protected dashboard routes - authentication required
+    { path: '/dashboard', authRequired: true, redirectTo: '/auth/login', description: 'Main dashboard' },
+    { path: '/dashboard/profile', authRequired: true, redirectTo: '/auth/login', description: 'User profile' },
+    { path: '/dashboard/settings', authRequired: true, redirectTo: '/auth/login', description: 'User settings' },
+    { path: '/dashboard/my-trips', authRequired: true, redirectTo: '/auth/login', description: 'User trips' },
+    { path: '/dashboard/explore', authRequired: true, redirectTo: '/auth/login', description: 'Explore content' },
+    { path: '/dashboard/favorites', authRequired: true, redirectTo: '/auth/login', description: 'User favorites' },
+    { path: '/dashboard/notifications', authRequired: true, redirectTo: '/auth/login', description: 'Notifications' },
 
-    // Premium features (require paid subscription)
-    { path: '/dashboard/analytics', authRequired: true, subscriptionRequired: 'explorer', redirectTo: '/dashboard?upgrade=true' },
-    { path: '/dashboard/export', authRequired: true, subscriptionRequired: 'explorer', redirectTo: '/dashboard?upgrade=true' },
-    { path: '/dashboard/advanced', authRequired: true, subscriptionRequired: 'traveler', redirectTo: '/dashboard?upgrade=true' },
+    // Premium features - subscription required
+    { path: '/dashboard/analytics', authRequired: true, subscriptionRequired: 'explorer', redirectTo: '/dashboard?upgrade=analytics', description: 'Analytics dashboard' },
+    { path: '/dashboard/export', authRequired: true, subscriptionRequired: 'explorer', redirectTo: '/dashboard?upgrade=export', description: 'Data export' },
+    { path: '/dashboard/advanced', authRequired: true, subscriptionRequired: 'traveler', redirectTo: '/dashboard?upgrade=advanced', description: 'Advanced features' },
+    { path: '/dashboard/bulk-operations', authRequired: true, subscriptionRequired: 'traveler', redirectTo: '/dashboard?upgrade=bulk', description: 'Bulk operations' },
+    { path: '/dashboard/api-access', authRequired: true, subscriptionRequired: 'enterprise', redirectTo: '/dashboard?upgrade=api', description: 'API access' },
 
-    // Admin routes
-    { path: '/admin', authRequired: true, adminOnly: true, redirectTo: '/dashboard' },
+    // Subscription management routes
+    { path: '/subscription', authRequired: true, redirectTo: '/auth/login', description: 'Subscription management' },
+    { path: '/subscription/billing', authRequired: true, redirectTo: '/auth/login', description: 'Billing history' },
+    { path: '/subscription/upgrade', authRequired: true, redirectTo: '/auth/login', description: 'Upgrade subscription' },
+    { path: '/subscription/cancel', authRequired: true, redirectTo: '/auth/login', description: 'Cancel subscription' },
 
-    // API routes (will be handled separately)
-    { path: '/api', authRequired: false },
+    // Admin routes - admin access only
+    { path: '/admin', authRequired: true, adminOnly: true, redirectTo: '/unauthorized', description: 'Admin dashboard' },
+    { path: '/admin/users', authRequired: true, adminOnly: true, redirectTo: '/unauthorized', description: 'User management' },
+    { path: '/admin/subscriptions', authRequired: true, adminOnly: true, redirectTo: '/unauthorized', description: 'Subscription management' },
+    { path: '/admin/analytics', authRequired: true, adminOnly: true, redirectTo: '/unauthorized', description: 'Admin analytics' },
+    { path: '/admin/system', authRequired: true, adminOnly: true, redirectTo: '/unauthorized', description: 'System management' },
+    { path: '/admin/support', authRequired: true, adminOnly: true, redirectTo: '/unauthorized', description: 'Support management' },
+    { path: '/admin/monitoring', authRequired: true, adminOnly: true, redirectTo: '/unauthorized', description: 'System monitoring' },
+    { path: '/admin/audit', authRequired: true, adminOnly: true, redirectTo: '/unauthorized', description: 'Audit logs' },
+
+    // API routes - handled separately with their own protection
+    { path: '/api', authRequired: false, description: 'API endpoints' },
 ]
 
 // Helper function to check if a path matches a route config
@@ -61,36 +96,80 @@ function getRouteConfig(pathname: string): RouteConfig | null {
 
 // Helper function to check subscription tier hierarchy
 function hasRequiredSubscription(userTier: string, requiredTier: string): boolean {
-    const tierHierarchy = ['free', 'explorer', 'traveler', 'enterprise']
-    const userTierIndex = tierHierarchy.indexOf(userTier)
-    const requiredTierIndex = tierHierarchy.indexOf(requiredTier)
+    const userTierIndex = SUBSCRIPTION_TIERS.indexOf(userTier as SubscriptionTier)
+    const requiredTierIndex = SUBSCRIPTION_TIERS.indexOf(requiredTier as SubscriptionTier)
+
+    // If either tier is not found, deny access
+    if (userTierIndex === -1 || requiredTierIndex === -1) {
+        return false
+    }
 
     return userTierIndex >= requiredTierIndex
 }
 
+// Helper function to determine protection level
+function getProtectionLevel(routeConfig: RouteConfig): ProtectionLevel {
+    if (!routeConfig.authRequired) return ProtectionLevel.PUBLIC
+    if (routeConfig.adminOnly) return ProtectionLevel.ADMIN_ONLY
+    if (routeConfig.subscriptionRequired) return ProtectionLevel.SUBSCRIPTION_REQUIRED
+    return ProtectionLevel.AUTH_REQUIRED
+}
+
+// Helper function to create redirect URL with context
+function createRedirectUrl(request: NextRequest, redirectTo: string, context?: Record<string, string>): URL {
+    const redirectUrl = new URL(redirectTo, request.url)
+
+    // Add original path for post-auth redirect
+    redirectUrl.searchParams.set('redirectTo', request.nextUrl.pathname)
+
+    // Add any additional context
+    if (context) {
+        Object.entries(context).forEach(([key, value]) => {
+            redirectUrl.searchParams.set(key, value)
+        })
+    }
+
+    return redirectUrl
+}
+
+// Helper function to log middleware actions (for debugging)
+function logMiddlewareAction(action: string, pathname: string, details?: any) {
+    if (process.env.NODE_ENV === 'development') {
+        console.log(`[Middleware] ${action}: ${pathname}`, details ? JSON.stringify(details) : '')
+    }
+}
+
 export async function middleware(request: NextRequest) {
     const { pathname } = request.nextUrl
+    const startTime = Date.now()
 
-    // Skip middleware for static files and API routes that don't need protection
+    // Skip middleware for static files and certain paths
     if (
         pathname.startsWith('/_next/') ||
         pathname.startsWith('/favicon.ico') ||
         pathname.startsWith('/public/') ||
-        pathname.includes('.')
+        pathname.startsWith('/images/') ||
+        pathname.includes('.') && !pathname.includes('/api/')
     ) {
         return NextResponse.next()
     }
 
+    logMiddlewareAction('Processing', pathname)
+
     // Get route configuration
     const routeConfig = getRouteConfig(pathname)
 
-    // If no route config found, allow access (default behavior)
+    // If no route config found, allow access but log for monitoring
     if (!routeConfig) {
+        logMiddlewareAction('No config found, allowing access', pathname)
         return NextResponse.next()
     }
 
+    const protectionLevel = getProtectionLevel(routeConfig)
+    logMiddlewareAction('Protection level', pathname, { level: protectionLevel })
+
     // If route doesn't require authentication, allow access
-    if (!routeConfig.authRequired) {
+    if (protectionLevel === ProtectionLevel.PUBLIC) {
         return NextResponse.next()
     }
 
@@ -152,10 +231,12 @@ export async function middleware(request: NextRequest) {
         // Get user session
         const { data: { session }, error } = await supabase.auth.getSession()
 
-        // If no session and auth is required, redirect to login
+        // If no session and auth is required, redirect to unauthorized page
         if (!session || error) {
-            const redirectUrl = new URL(routeConfig.redirectTo || '/auth', request.url)
-            redirectUrl.searchParams.set('redirectTo', pathname)
+            logMiddlewareAction('No session, redirecting', pathname, { error: error?.message })
+            const redirectUrl = createRedirectUrl(request, '/unauthorized', {
+                reason: 'authentication_required'
+            })
             return NextResponse.redirect(redirectUrl)
         }
 
@@ -167,26 +248,43 @@ export async function middleware(request: NextRequest) {
             .single()
 
         // Check admin access
-        if (routeConfig.adminOnly && !profile?.is_admin) {
-            const redirectUrl = new URL(routeConfig.redirectTo || '/dashboard', request.url)
+        if (protectionLevel === ProtectionLevel.ADMIN_ONLY && !profile?.is_admin) {
+            logMiddlewareAction('Admin access denied', pathname, { userId: session.user.id })
+            const redirectUrl = createRedirectUrl(request, '/unauthorized', {
+                reason: 'admin_required',
+                message: 'Administrative access required'
+            })
             return NextResponse.redirect(redirectUrl)
         }
 
         // Check subscription requirements
-        if (routeConfig.subscriptionRequired) {
+        if (protectionLevel === ProtectionLevel.SUBSCRIPTION_REQUIRED && routeConfig.subscriptionRequired) {
             const userTier = profile?.subscription_tier || 'free'
             const subscriptionStatus = profile?.subscription_status || 'active'
 
+            logMiddlewareAction('Checking subscription', pathname, {
+                userTier,
+                requiredTier: routeConfig.subscriptionRequired,
+                status: subscriptionStatus
+            })
+
             // Check if subscription is active
             if (subscriptionStatus !== 'active') {
-                const redirectUrl = new URL('/dashboard?subscription=expired', request.url)
+                const redirectUrl = createRedirectUrl(request, '/unauthorized', {
+                    reason: 'subscription_expired',
+                    message: 'Your subscription has expired'
+                })
                 return NextResponse.redirect(redirectUrl)
             }
 
             // Check if user has required subscription tier
             if (!hasRequiredSubscription(userTier, routeConfig.subscriptionRequired)) {
-                const redirectUrl = new URL(routeConfig.redirectTo || '/dashboard?upgrade=true', request.url)
-                redirectUrl.searchParams.set('required', routeConfig.subscriptionRequired)
+                const redirectUrl = createRedirectUrl(request, '/unauthorized', {
+                    reason: 'subscription_upgrade_required',
+                    required: routeConfig.subscriptionRequired,
+                    current: userTier,
+                    feature: routeConfig.description || 'this feature'
+                })
                 return NextResponse.redirect(redirectUrl)
             }
         }
@@ -197,6 +295,15 @@ export async function middleware(request: NextRequest) {
         requestHeaders.set('x-user-email', session.user.email || '')
         requestHeaders.set('x-subscription-tier', profile?.subscription_tier || 'free')
         requestHeaders.set('x-subscription-status', profile?.subscription_status || 'active')
+        requestHeaders.set('x-is-admin', profile?.is_admin ? 'true' : 'false')
+        requestHeaders.set('x-protection-level', protectionLevel)
+        requestHeaders.set('x-route-description', routeConfig.description || '')
+
+        const processingTime = Date.now() - startTime
+        logMiddlewareAction('Access granted', pathname, {
+            processingTime: `${processingTime}ms`,
+            userTier: profile?.subscription_tier || 'free'
+        })
 
         return NextResponse.next({
             request: {
@@ -206,16 +313,18 @@ export async function middleware(request: NextRequest) {
 
     } catch (error) {
         console.error('Middleware error:', error)
+        logMiddlewareAction('Error occurred', pathname, { error: error instanceof Error ? error.message : 'Unknown error' })
 
-        // On error, redirect to login if auth was required
-        if (routeConfig.authRequired) {
-            const redirectUrl = new URL('/auth', request.url)
-            redirectUrl.searchParams.set('redirectTo', pathname)
-            redirectUrl.searchParams.set('error', 'middleware_error')
+        // On error, redirect to unauthorized page if auth was required
+        if (protectionLevel !== ProtectionLevel.PUBLIC) {
+            const redirectUrl = createRedirectUrl(request, '/unauthorized', {
+                reason: 'middleware_error',
+                message: 'An error occurred while checking access permissions'
+            })
             return NextResponse.redirect(redirectUrl)
         }
 
-        // Otherwise, allow access
+        // Otherwise, allow access but log the error
         return NextResponse.next()
     }
 }

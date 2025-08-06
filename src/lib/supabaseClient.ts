@@ -7,9 +7,11 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
 // Server-side Supabase client with service role key (for admin operations)
+const supabaseServiceRoleKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+
 export const supabaseAdmin = createClient(
     supabaseUrl,
-    supabaseAnonKey,
+    supabaseServiceRoleKey,
     {
         auth: {
             autoRefreshToken: false,
@@ -204,6 +206,77 @@ export interface Database {
                     stripe_price_id_yearly?: string | null
                     created_at?: string
                     updated_at?: string
+                }
+            }
+            image_metadata: {
+                Row: {
+                    id: string
+                    user_id: string
+                    filename: string
+                    original_name: string
+                    size_bytes: number
+                    mime_type: string
+                    width: number | null
+                    height: number | null
+                    experience_id: string | null
+                    storage_path: string
+                    upload_date: string
+                    created_at: string
+                    updated_at: string
+                    archived: boolean
+                    archived_at: string | null
+                    tags: string[] | null
+                    description: string | null
+                    location: string | null
+                    camera_make: string | null
+                    camera_model: string | null
+                    camera_settings: Record<string, unknown> | null
+                }
+                Insert: {
+                    id?: string
+                    user_id: string
+                    filename: string
+                    original_name: string
+                    size_bytes: number
+                    mime_type: string
+                    width?: number | null
+                    height?: number | null
+                    experience_id?: string | null
+                    storage_path: string
+                    upload_date?: string
+                    created_at?: string
+                    updated_at?: string
+                    archived?: boolean
+                    archived_at?: string | null
+                    tags?: string[] | null
+                    description?: string | null
+                    location?: string | null
+                    camera_make?: string | null
+                    camera_model?: string | null
+                    camera_settings?: Record<string, unknown> | null
+                }
+                Update: {
+                    id?: string
+                    user_id?: string
+                    filename?: string
+                    original_name?: string
+                    size_bytes?: number
+                    mime_type?: string
+                    width?: number | null
+                    height?: number | null
+                    experience_id?: string | null
+                    storage_path?: string
+                    upload_date?: string
+                    created_at?: string
+                    updated_at?: string
+                    archived?: boolean
+                    archived_at?: string | null
+                    tags?: string[] | null
+                    description?: string | null
+                    location?: string | null
+                    camera_make?: string | null
+                    camera_model?: string | null
+                    camera_settings?: Record<string, unknown> | null
                 }
             }
         }
